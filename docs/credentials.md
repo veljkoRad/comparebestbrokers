@@ -2,6 +2,8 @@
 ```https://comparebestbrokers.com/cbb_wp/wp-admin```
 ```https://comparebestbrokers.com/cbb_wp/wp-json/wp/v2/brokers```
 
+```git push brokers master```
+
 
 ## Hostinger:
 

@@ -1,11 +1,15 @@
+import { Routes, Route } from 'react-router-dom';
 import { Box } from "@mui/material";
-import Navbar from "./components/Navbar";
+import Brokers from './pages/Brokers';
+import Home from './pages/Home';
 
 function App() {
   return (
-    <Box  component="main" sx={{minHeight:'100vh'}}>
-    <Navbar />
-    </Box>
+    <Routes>
+      <Route path="/" element={<Home />} />
+       <Route path="/brokers" element={<Brokers />} />
+
+    </Routes>
   );
 }
 

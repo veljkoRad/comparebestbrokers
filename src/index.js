@@ -3,6 +3,10 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { CssBaseline, ThemeProvider, createTheme } from '@mui/material';
 import './index.css';
+import '@fontsource/lato'
+import '@fontsource/lato/100.css'; 
+import '@fontsource/lato/400.css'; 
+import '@fontsource/lato/700.css'; 
 import App from './App';
 
 const theme = createTheme({
@@ -14,7 +18,7 @@ const theme = createTheme({
       dark: '#0D1B1B80'
     },
     secondary: {
-      main: "#fff",
+      main: "#000",
       dark: '#02706d'
     },
     info: {
@@ -32,27 +36,19 @@ const theme = createTheme({
     },
   },
   typography: {
+    fontFamily:"Lato, 'Trebuchet MS', serif",
     h1: {
-      fontSize: '64px',
+      fontSize: '56px',
       fontWeight: 700,
-      '@media (min-width:0)': { fontSize: '38px' },
-      '@media (min-width:600px)': { fontSize: '48px' },
-      '@media (min-width:900px)': { fontSize: '64px' },
+      '@media (max-width:766px)': { fontSize: '32px' }
 
     },
     h2: {
-      fontSize: '40px',
-      fontWeight: 600,
-      '@media (max-width:991px)': { fontSize: '32px' },
-      '@media (max-width:767px)': { fontSize: '28px' }
+      fontSize: '32px',
+      fontWeight: 700
     },
     h3: {
-      fontSize: '32px',
-      fontWeight: 700,
-      '@media (max-width:991px)': { fontSize: '24px' },
-    },
-    h4: {
-      fontSize: '28px',
+      fontSize: '20px',
       fontWeight: 700
     },
     button: {
@@ -60,22 +56,9 @@ const theme = createTheme({
       fontWeight:600,
       textTransform:'capitalize'
     },
-    body1: {
-      fontSize: '17px'
-    },
-    body2: {
-      fontSize: '17px',
-      fontWeight: 600,
-      '@media (max-width:991px)': { fontSize: '13px' }
-    },
-    subtitle1: {
-      fontSize: '16px',
-      fontWeight: 600,
-      '@media (max-width:991px)': { fontSize: '12px' }
-    },
-    subtitle2: {
-      fontSize: '12px',
-      fontWeight: 400
+    description: {
+      fontWeight:'100',
+      fontSize: '16px'
     }
   },
   breakpoints: {
@@ -85,6 +68,39 @@ const theme = createTheme({
       md: 991,
       lg: 1200,
       xl: 1440,
+    }
+  },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root:({theme}) => ({
+          textDecoration:'none',
+          color:theme.palette.info.main
+        })
+      }
+    },
+    MuiLink: {
+      styleOverrides: {
+        root: {
+          color: '#fff',
+          textDecoration: 'none'
+        },
+      },
+    },
+        MuiList: {
+      styleOverrides: {
+        root: {
+          padding:'0'
+        },
+      },
+    },
+    MuiToolbar: {
+       styleOverrides: {
+        root: {
+           minHeight: '72px', 
+           justifyContent: 'space-between'
+        },
+      },
     }
   }
 })
