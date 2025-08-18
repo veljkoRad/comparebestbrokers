@@ -3,10 +3,6 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 import "./index.css";
-import "@fontsource/lato";
-import "@fontsource/lato/100.css";
-import "@fontsource/lato/400.css";
-import "@fontsource/lato/700.css";
 import App from "./App";
 
 const theme = createTheme({
@@ -27,7 +23,6 @@ const theme = createTheme({
     background: { default: "#fff" },
   },
   typography: {
-    fontFamily: "Lato, 'Trebuchet MS', serif",
     h1: {
       fontSize: "56px",
       fontWeight: 700,
@@ -45,11 +40,8 @@ const theme = createTheme({
       fontSize: "16px",
       fontWeight: 600,
       textTransform: "capitalize",
-    },
-    description: {
-      fontWeight: "400",
-      fontSize: "16px",
-    },
+    }
+ 
   },
   breakpoints: {
     values: {
@@ -69,10 +61,10 @@ const theme = createTheme({
         }),
       },
     },
-    MuiCard: {
+    MuiDrawer: {
       styleOverrides: {
-        root: ({ theme }) => ({
-          boxShadow: "none",
+        paper:({theme})=> ({
+          backgroundColor: theme.palette.primary.main
         }),
       },
     },

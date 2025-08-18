@@ -74,7 +74,7 @@ const Navbar = () => {
                     marginLeft: "auto",
                   }}
                 >
-                  <CloseIcon color="primary" fontSize="small" />
+                  <CloseIcon color="white" fontSize="medium" />
                 </IconButton>
                 <List sx={{ flexDirection: "column" }}>
                   {/* Mobile view */}
@@ -98,7 +98,7 @@ const Navbar = () => {
                             component={RouterLink}
                             to={item.url}
                             sx={{
-                              color: (theme) => theme.palette.black.main,
+                              color: (theme) => theme.palette.white.main,
                               textDecoration: "none",
                               width: "100%",
                             }}

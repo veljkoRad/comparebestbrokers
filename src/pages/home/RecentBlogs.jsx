@@ -6,13 +6,15 @@ import {
   CardContent,
   CardMedia,
   Container,
+  Link,
   Typography,
 } from "@mui/material";
+import { Link as RouterLink } from "react-router-dom";
 import Underline from "../../components/Underline";
 
 const RecentBlogs = ({ posts }) => {
   return (
-    <Container sx={{ paddingTop: 16, paddingBottom: 16 }}>
+    <Container sx={{ paddingTop: 16, paddingBottom: 0 }}>
       <Typography variant="h2" color="black">
         Recent news
       </Typography>
@@ -31,13 +33,14 @@ const RecentBlogs = ({ posts }) => {
           },
         }}
       >
-        {posts.slice(-6).map((item) => (
-          <Card sx={{ maxWidth: 360, marginTop: 6, width: "100%" }}>
+        {posts.slice(0, 6).map((item) => (
+          <Card sx={{ maxWidth: 360, marginTop: 6, width: "100%", boxShadow: 'none' }}>
             <CardMedia
               sx={{ height: 220 }}
               image={item.imageUrl}
               title={item.title}
               alt="Post Image"
+              loading="lazy"
             />
             <CardContent sx={{ padding: "16px 0 0" }}>
               <Typography
@@ -49,7 +52,7 @@ const RecentBlogs = ({ posts }) => {
                 {item.title}
               </Typography>
               <Typography
-                variant="description"
+                variant="body1"
                 color="black"
                 dangerouslySetInnerHTML={{
                   __html:
@@ -60,13 +63,18 @@ const RecentBlogs = ({ posts }) => {
               />
             </CardContent>
             <CardActions sx={{ padding: 0 }}>
-              <Button
-                variant="outlined"
-                size="small"
-                sx={{ color: (theme) => theme.palette.black.main }}
+              <Link
+                component={RouterLink}
+                to={`/blogs/${item.slug}`}
               >
-                Read More
-              </Button>
+                <Button
+                  variant="outlined"
+                  size="small"
+                  sx={{ color: (theme) => theme.palette.black.main }}
+                >
+                  Read More
+                </Button>
+              </Link>
             </CardActions>
           </Card>
         ))}
