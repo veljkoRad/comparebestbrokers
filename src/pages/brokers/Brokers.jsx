@@ -3,7 +3,7 @@ import { Typography } from "@mui/material";
 const Brokers = () => {
   return (
     <>
-      <Typography color="black">Brokers</Typography>
+      <Typography color="text">Brokers</Typography>
     </>
   );
 };

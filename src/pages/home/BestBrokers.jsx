@@ -1,16 +1,15 @@
 
 import { Button, Card, CardContent, CardActions, CardMedia, Container, Link, Rating, Typography, Box } from "@mui/material"
-import Underline from "../../components/Underline";
+import TextGradient from "../../components/TextGradient";
 
 const BestBrokers = ({ brokers }) => {
 
     console.log(brokers);
     return (
-        <Container sx={{ marginTop: 16, marginBottom: 16, paddingY: 16, paddingX: '30px !important', background: (theme) => theme.palette.secondary.main, borderRadius: '48px' }} >
-            <Typography variant="h2" color="black">
+        <Container sx={{ marginTop: 16, marginBottom: 16, paddingY: 16, paddingX: '30px !important', background: (theme) => theme.palette.primary.light, border: "1px solid #222F43", borderRadius: '48px' }} >
+            <TextGradient variant="h2">
                 Best Brokers
-            </Typography>
-            <Underline />
+            </TextGradient>
             <Box sx={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '30px', marginTop: 12 }}>
                 {
                     brokers.map((item) => (
@@ -28,6 +27,11 @@ const BestBrokers = ({ brokers }) => {
                                     name="best-brokers-raitings"
                                     readOnly
                                     value={item.rating}
+                                    sx={{
+                                        '& .MuiRating-iconFilled': {
+                                            color: (theme) => theme.palette.text.secondary,
+                                        }
+                                    }}
                                 />
                                 <Typography>Minimum Deposit: <strong>{item.minDeposit}</strong> </Typography>
 
@@ -40,7 +44,7 @@ const BestBrokers = ({ brokers }) => {
                                     <Button
                                         variant="outlined"
                                         size="small"
-                                        sx={{ color: (theme) => theme.palette.black.main }}
+                                        sx={{ color: (theme) => theme.palette.text.primary }}
                                     >
                                         Read More
                                     </Button>

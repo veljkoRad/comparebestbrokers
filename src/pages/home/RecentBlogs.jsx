@@ -10,23 +10,27 @@ import {
   Typography,
 } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
-import Underline from "../../components/Underline";
+import TextGradient from "../../components/TextGradient";
+import { useState } from "react";
 
 const RecentBlogs = ({ posts }) => {
+  const [postHover, setPostHover] = useState(false)
+
+
   return (
-    <Container sx={{ paddingTop: 16, paddingBottom: 0 }}>
-      <Typography variant="h2" color="black">
+    <Container sx={{ paddingTop: '70px', paddingBottom: 0 }}>
+      <TextGradient variant="h2">
         Recent news
-      </Typography>
-      <Underline />
-      <Typography variant="h3" color="black" sx={{ marginTop: 6 }}>
+      </TextGradient>
+      <Typography variant="h4" color="text" sx={{ marginTop: '10px' }}>
         Explore these featured brokers to get started.
       </Typography>
       <Box
         sx={{
           display: "flex",
           flexWrap: "wrap",
-          gap: "48px",
+          gap: "24px",
+          paddingTop: '40px',
           justifyContent: {
             xs: "center",
             lg: "flex-start",
@@ -34,49 +38,15 @@ const RecentBlogs = ({ posts }) => {
         }}
       >
         {posts.slice(0, 6).map((item) => (
-          <Card sx={{ maxWidth: 360, marginTop: 6, width: "100%", boxShadow: 'none' }}>
-            <CardMedia
-              sx={{ height: 220 }}
-              image={item.imageUrl}
-              title={item.title}
-              alt="Post Image"
-              loading="lazy"
-            />
-            <CardContent sx={{ padding: "16px 0 0" }}>
-              <Typography
-                gutterBottom
-                variant="h2"
-                component="div"
-                color="black"
-              >
-                {item.title}
-              </Typography>
-              <Typography
-                variant="body1"
-                color="black"
-                dangerouslySetInnerHTML={{
-                  __html:
-                    item.content.length > 350
-                      ? item.content.slice(0, 350) + "..."
-                      : item.content,
-                }}
-              />
-            </CardContent>
-            <CardActions sx={{ padding: 0 }}>
-              <Link
-                component={RouterLink}
-                to={`/blogs/${item.slug}`}
-              >
-                <Button
-                  variant="outlined"
-                  size="small"
-                  sx={{ color: (theme) => theme.palette.black.main }}
-                >
-                  Read More
-                </Button>
-              </Link>
-            </CardActions>
-          </Card>
+          <Link component={RouterLink} to={`/blogs/${item.slug}`} >
+            <Card sx={{
+              marginTop: '30px', position: 'relative', width: "354px", height: '415px', boxShadow: 'none', backgroundImage: `url(${item.imageUrl})`, backgroundSize: "cover", backgroundPosition: "center", borderRadius: '8px', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', padding: '30px 15px'
+            }} onMouseEnter={() => setPostHover(!postHover)} onMouseLeave={() => setPostHover(false)}>
+              <Box component='img' src='/images/bg-trans.png' sx={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: 1 }}></Box>
+              <Typography variant="h3" sx={{ position: 'relative', zIndex: 2, color: (theme) => postHover ? theme.palette.secondary.main : theme.palette.text.secondary }}>{item.title}</Typography>
+
+            </Card>
+          </Link>
         ))}
       </Box>
     </Container>

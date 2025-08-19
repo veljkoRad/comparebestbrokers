@@ -11,7 +11,7 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useLocation } from "react-router-dom";
 import axios from "axios";
 import {
   Search,
@@ -27,7 +27,7 @@ const Navbar = () => {
   const [toggleMenuMobile, setToggleMenuMobile] = useState(false);
   const [hoverToggle, setHoverToggle] = useState(null);
   const [menus, setMenus] = useState([]);
-  const [underline, setUnderline] = useState(null);
+  const location = useLocation();
 
   const toggleNavMenu = () => {
     setToggleMenu(!toggleMenu);
@@ -52,10 +52,10 @@ const Navbar = () => {
   }, []);
 
   return (
-    <Box>
+    <Box sx={{ marginTop: "15px" }}>
       <AppBar position="static">
         <Container maxWidth="lg">
-          <Toolbar sx={{}}>
+          <Toolbar>
             <Box sx={{ display: "flex", alignItems: "center" }}>
               <Drawer
                 anchor="top"
@@ -66,7 +66,7 @@ const Navbar = () => {
                   alignItems: "flex-end",
                 }}
               >
-                <IconButton
+                <IconButton color="secondary"
                   onClick={toggleNavMenu}
                   sx={{
                     padding: "20px",
@@ -74,7 +74,7 @@ const Navbar = () => {
                     marginLeft: "auto",
                   }}
                 >
-                  <CloseIcon color="white" fontSize="medium" />
+                  <CloseIcon color="text" fontSize="medium" />
                 </IconButton>
                 <List sx={{ flexDirection: "column" }}>
                   {/* Mobile view */}
@@ -98,21 +98,27 @@ const Navbar = () => {
                             component={RouterLink}
                             to={item.url}
                             sx={{
-                              color: (theme) => theme.palette.white.main,
+                              color: (theme) => theme.palette.text.mobile,
                               textDecoration: "none",
+                              fontWeight: 500,
                               width: "100%",
+                              '&:focus': {
+                                color: (theme) => theme.palette.text.primary,
+                                transform: 'translateX(5px)',
+                                transition: "transform 0.4s ease",
+                              },
                             }}
                           >
                             {item.title}
                           </Link>
                         </ListItem>
 
-                        {/* Render submenu items */}
+                        {/* Submenu items MOBILE */}
                         {menus.filter(
                           (sub) => sub.submenu === item.id.toString()
                         ) &&
                           toggleMenuMobile === item.id && (
-                            <List>
+                            <List sx={{ paddingLeft: '20px' }}>
                               {menus
                                 .filter(
                                   (sub) => sub.submenu === item.id.toString()
@@ -130,9 +136,10 @@ const Navbar = () => {
                                       to={sub.url}
                                       sx={{
                                         color: (theme) =>
-                                          theme.palette.black.main,
+                                          theme.palette.text.mobile,
                                         textDecoration: "none",
                                         width: "100%",
+                                        fontSize: '14px'
                                       }}
                                     >
                                       {sub.title}
@@ -146,9 +153,10 @@ const Navbar = () => {
                 </List>
               </Drawer>
 
-              <Typography variant="h3" noWrap component="div">
-                <Link href="/">CBB</Link>
-              </Typography>
+              <Link component={RouterLink} to='/' >
+                <Box component='img' src='/images/cbb-icon.png' height='39px'></Box>
+              </Link>
+
             </Box>
 
             {/* Desktop view */}
@@ -163,103 +171,113 @@ const Navbar = () => {
               <List sx={{ display: { xs: "none", sm: "flex" } }}>
                 {menus
                   .filter((item) => item.submenu === "0") // top-level items
-                  .map((item) => (
-                    <Box
-                      key={item.id}
-                      sx={{
-                        position: "relative",
-                        height: "72px",
-                        display: "flex",
-                        alignItems: "center",
-                        borderBottom:
-                          hoverToggle === item.id
-                            ? "3px solid #fff"
-                            : "3px solid transparent",
-                      }}
-                      onMouseEnter={() => {
-                        setHoverToggle(item.id);
-                        setUnderline(true);
-                      }}
-                      onMouseLeave={() => {
-                        setHoverToggle(null);
-                        setUnderline(false);
-                      }}
-                    >
-                      <ListItem
+                  .map((item) => {
+                    const subMenus = menus.filter(
+                      (sub) => sub.submenu === item.id.toString()
+                    );
+
+                    return (
+                      <Box
+                        key={item.id}
                         sx={{
-                          textTransform: "capitalize",
-                          fontWeight: "700",
-                          cursor: "pointer",
+                          position: "relative",
+                          height: "64px",
+                          display: "flex",
+                          alignItems: "center",
                         }}
+                        onMouseEnter={() => setHoverToggle(item.id)}
+                        onMouseLeave={() => setHoverToggle(null)}
                       >
-                        <Link
-                          component={RouterLink}
-                          to={item.url}
+                        <ListItem
                           sx={{
-                            color: (theme) => theme.palette.black.white,
-                            textDecoration: "none",
-                            height: "100%",
+                            textTransform: "capitalize",
+                            fontWeight: "700",
+                            cursor: "pointer",
                           }}
                         >
-                          {item.title}
-                        </Link>
-                      </ListItem>
+                          <Link
+                            component={RouterLink}
+                            to={item.url}
+                            sx={{
+                              color: (theme) => theme.palette.text.primary,
+                              textDecoration: "none",
+                              height: "100%",
+                            }}
+                          >
+                            <Typography
+                              sx={{
+                                fontSize: '16px',
+                                color: location.pathname === item.url
+                                  ? (theme) => theme.palette.text.secondary
+                                  : (theme) => theme.palette.text.primary,
+                                '&:hover': {
+                                  color: (theme) => theme.palette.text.secondary,
+                                  transition: "color 0.3s ease",
+                                },
+                              }}
+                            >
+                              {item.title}
+                            </Typography>
+                          </Link>
+                        </ListItem>
 
-                      {/* Render submenu items */}
-                      {menus.filter(
-                        (sub) => sub.submenu === item.id.toString()
-                      ) &&
-                        hoverToggle === item.id && (
+                        {subMenus.length > 0 && hoverToggle === item.id && (
                           <List
                             sx={{
-                              background: (theme) => theme.palette.white.main,
-                              minWidth: "150px",
                               position: "absolute",
                               top: "100%",
                               left: "50%",
                               transform: "translateX(-50%)",
-                              borderBottomLeftRadius: "4px",
-                              borderBottomRightRadius: "4px",
-                              boxShadow: "0px 8px 16px rgba(0,0,0,0.15)",
-                              opacity: hoverToggle === item.id ? "1" : "0",
-                              transition: "opacity 2s ease, transform 2s ease",
+                              minWidth: "150px",
+                              background: (theme) => theme.palette.primary.light,
+                              borderRadius: "8px",
+                              border: "1px solid #222F43",
+                              display: "block",
+                              opacity: hoverToggle === item.id ? 1 : 0,
+                              transition: "opacity 0.3s ease, transform 0.3s ease",
+                              zIndex: 10, // 
                             }}
                           >
-                            {menus
-                              .filter(
-                                (sub) => sub.submenu === item.id.toString()
-                              )
-                              .map((sub) => (
-                                <ListItem
-                                  key={sub.id}
+                            {subMenus.map((sub) => (
+                              <ListItem
+                                key={sub.id}
+                                sx={{
+                                  textTransform: "capitalize",
+                                  fontWeight: "500",
+                                }}
+                              >
+                                <Link
+                                  component={RouterLink}
+                                  to={sub.url}
                                   sx={{
-                                    textTransform: "capitalize",
-                                    fontWeight: "500",
+                                    color: (theme) => theme.palette.text.primary,
+                                    textDecoration: "none",
+                                    whiteSpace: "nowrap",
+                                    px: 2,
+                                    py: 1,
+                                    display: "block",
+                                    // ✅ Change 6: added hover background for submenu items
+                                    '&:hover': {
+                                      backgroundColor: (theme) => theme.palette.primary.main,
+                                      color: (theme) => theme.palette.text.secondary,
+                                    },
                                   }}
                                 >
-                                  <Link
-                                    component={RouterLink}
-                                    to={sub.url}
-                                    sx={{
-                                      color: (theme) =>
-                                        theme.palette.black.main,
-                                      textDecoration: "none",
-                                      whiteSpace: "nowrap",
-                                    }}
-                                  >
-                                    {sub.title}
-                                  </Link>
-                                </ListItem>
-                              ))}
+                                  {sub.title}
+                                </Link>
+                              </ListItem>
+                            ))}
                           </List>
                         )}
-                    </Box>
-                  ))}
+                      </Box>
+                    );
+                  })}
               </List>
+
               <IconButton
                 size="large"
                 edge="start"
-                color="inherit"
+                color="secondary"
                 aria-label="open drawer"
                 sx={{ display: { sm: "none" } }}
                 onClick={toggleNavMenu}
@@ -268,7 +286,7 @@ const Navbar = () => {
               </IconButton>
               <Search>
                 <SearchIconWrapper>
-                  <SearchIcon />
+                  <SearchIcon color="secondary" />
                 </SearchIconWrapper>
                 <StyledInputBase
                   placeholder="Search…"

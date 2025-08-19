@@ -41,7 +41,7 @@ const SinglePost = ({ posts }) => {
                             title={single.title}
                         />
                     </SingleCard>
-                    <Typography color='black' variant='h1' sx={{ fontWeight: 600, textAlign: 'center', marginTop: 4 }}>
+                    <Typography color='text' variant='h1' sx={{ fontWeight: 600, textAlign: 'center', marginTop: 4 }}>
                         {single.title}
                     </Typography>
                     <Typography dangerouslySetInnerHTML={{ __html: single.content }} />

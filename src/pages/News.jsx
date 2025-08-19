@@ -5,7 +5,7 @@ import Navbar from "../components/Navbar";
 const News = () => {
   return (
     <>
-      <Typography color="black">News</Typography>
+      <Typography color="text">News</Typography>
     </>
   );
 };
