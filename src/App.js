@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import axios from "axios";
 import Brokers from "./pages/brokers/Brokers";
+import SingleBroker from "./components/SingleBroker"
 import Home from "./pages/home/Home";
 import News from "./pages/News";
 import Blogs from "./pages/Blogs";
@@ -28,21 +29,22 @@ function App() {
           id: post.id,
           title: post.title.rendered,
           content: post.content.rendered,
-          imageUrl: post._embedded?.["wp:featuredmedia"]?.[0]?.media_details?.sizes?.medium?.source_url || null,
+          imageUrl: post._embedded?.["wp:featuredmedia"]?.[0]?.media_details?.sizes?.medium_large?.source_url || null,
           slug: post.slug,
           categoryName: post._embedded?.["wp:term"]?.[0]?.[0]?.name || "Uncategorized",
+          date:post.date.slice(0,10)
         }));
 
         const simplifiedBrokers = brokersRes.data.map((broker) => ({
             id: broker.id,
             name: broker.acf?.broker_name || broker.title.rendered,  
-            logo: broker.acf?.broker_logo?.url || null,                   
-          mobileLogo: broker.acf?.broker_mobile_logo?.url || null,      
+            logo: broker.acf?.broker_logo?.url || null,  
           rating: broker.acf?.rating || 0,
           minDeposit:broker.acf?. minimum_deposit,
           fees: broker.acf?.fees ,
           maximum_leverage: broker.acf?.maximum_leverage || null,  
           button: broker.acf?.cta_button_url || null,
+          slug: broker.slug,
         }));
         console.log(simplifiedBrokers)
 
@@ -61,6 +63,7 @@ function App() {
         <Route path="/news" element={<News />} />
         <Route path="/blogs" element={<Blogs />} />
         <Route path="/blogs/:slug" element={<SinglePost posts={posts} />} />
+        <Route path="/brokers/:slug" element={<SingleBroker brokers={brokers} />} />
       </Routes>
       <Footer />
     </>

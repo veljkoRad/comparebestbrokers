@@ -2,12 +2,27 @@ import { useState, useEffect } from 'react';
 import { Box, Card, CardMedia, CardContent, Container, Typography } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
+import { motion } from 'framer-motion';
+import TextGradient from './TextGradient';
+
+const HtmlWrapper = styled('Typography')(({ theme }) => ({
+    "& h1": {
+        color: theme.palette.secondary.main,
+    },
+    "& h2": {
+        color: theme.palette.secondary.main,
+    },
+    "& h3": {
+        color: theme.palette.secondary.main,
+    }
+}));
 
 const SinglePost = ({ posts }) => {
     const { slug } = useParams();
     const [single, setSingle] = useState(null);
 
     useEffect(() => {
+        window.scrollTo(0, 0)
         if (slug && posts) {
             const foundSingle = posts.find((item) => item.slug === slug);
             setSingle(foundSingle);
@@ -32,20 +47,26 @@ const SinglePost = ({ posts }) => {
     return (
         <>
             <Box>
-                <Container maxWidth="sm" component='section' sx={{ paddingY: '80px !important' }}>
-                    <SingleCard>
-                        <CardMedia
-                            sx={{ maxWidth: '743px', width: '100%' }}
-                            component="img"
-                            src={single.imageUrl}
-                            title={single.title}
-                        />
-                    </SingleCard>
-                    <Typography color='text' variant='h1' sx={{ fontWeight: 600, textAlign: 'center', marginTop: 4 }}>
-                        {single.title}
-                    </Typography>
-                    <Typography dangerouslySetInnerHTML={{ __html: single.content }} />
-
+                <Container maxWidth="sm" component='section' sx={{ paddingY: '50px !important' }}>
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 1.2 }}
+                    >
+                        <Box sx={{ borderBottom: '1px solid #222F43 ', marginBottom: '50px' }}></Box>
+                        <TextGradient variant='h2' sx >
+                            {single.title}
+                        </TextGradient>
+                        <SingleCard>
+                            <CardMedia
+                                sx={{ maxWidth: '731px', width: '100%', borderRadius: '16px', height: '330px', objectFit: 'cover', marginTop: '50px' }}
+                                component="img"
+                                src={single.imageUrl}
+                                title={single.title}
+                            />
+                        </SingleCard>
+                        <HtmlWrapper dangerouslySetInnerHTML={{ __html: single.content }} />
+                    </motion.div>
                 </Container>
             </Box>
         </>

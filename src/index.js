@@ -23,7 +23,7 @@ const theme = createTheme({
     text: {
       primary: "#94A9C9", secondary:"#1CC2E7", white:'#fff', black:'#000',mobile:'#E6F0FF'
     },
-    background: { default: "#0F172A" },
+    background: { default: "#0F172A", paper:'#0F172A' }
   },
   typography: {
     fontFamily:'"Noto Sans", sans-serif',
@@ -35,6 +35,7 @@ const theme = createTheme({
     h2: {
       fontSize: "45px",
       fontWeight: 700,
+      color:(theme)=>theme.palette.secondary.main
     },
      h3: {
       fontSize: "24px",
@@ -48,6 +49,11 @@ const theme = createTheme({
     button: {
       fontSize: "14px",
       fontWeight: 400,
+      textTransform: "capitalize",
+    },
+     buttonMain: {
+      fontSize: "14px",
+      fontWeight: 700,
       textTransform: "capitalize",
     }
  
