@@ -30,8 +30,6 @@ const Navbar = () => {
   const [menus, setMenus] = useState([]);
   const location = useLocation();
 
-
-
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -46,7 +44,7 @@ const Navbar = () => {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: { duration: 1 }
+      transition: { duration: 1 },
     },
   };
 
@@ -87,8 +85,9 @@ const Navbar = () => {
                   alignItems: "flex-end",
                 }}
               >
-
-                <IconButton color="secondary"
+                <IconButton
+                  aria-hidden="close menu"
+                  color="secondary"
                   onClick={toggleNavMenu}
                   sx={{
                     padding: "20px",
@@ -96,7 +95,6 @@ const Navbar = () => {
                     marginLeft: "auto",
                   }}
                 >
-
                   <CloseIcon color="text" fontSize="medium" />
                 </IconButton>
 
@@ -126,9 +124,9 @@ const Navbar = () => {
                               textDecoration: "none",
                               fontWeight: 500,
                               width: "100%",
-                              '&:focus': {
+                              "&:focus": {
                                 color: (theme) => theme.palette.text.primary,
-                                transform: 'translateX(5px)',
+                                transform: "translateX(5px)",
                                 transition: "transform 0.4s ease",
                               },
                             }}
@@ -142,7 +140,7 @@ const Navbar = () => {
                           (sub) => sub.submenu === item.id.toString()
                         ) &&
                           toggleMenuMobile === item.id && (
-                            <List sx={{ paddingLeft: '20px' }}>
+                            <List sx={{ paddingLeft: "20px" }}>
                               {menus
                                 .filter(
                                   (sub) => sub.submenu === item.id.toString()
@@ -163,7 +161,7 @@ const Navbar = () => {
                                           theme.palette.text.mobile,
                                         textDecoration: "none",
                                         width: "100%",
-                                        fontSize: '14px'
+                                        fontSize: "14px",
                                       }}
                                     >
                                       {sub.title}
@@ -175,15 +173,18 @@ const Navbar = () => {
                       </Box>
                     ))}
                 </List>
-
               </Drawer>
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 1 }}
               >
-                <Link component={RouterLink} to='/' >
-                  <Box component='img' src='/images/cbb-icon.png' height='39px'></Box>
+                <Link component={RouterLink} to="/">
+                  <Box
+                    component="img"
+                    src="/images/cbb-icon.png"
+                    height="39px"
+                  ></Box>
                 </Link>
               </motion.div>
             </Box>
@@ -201,7 +202,8 @@ const Navbar = () => {
                 component={motion.div}
                 variants={containerVariants}
                 initial="hidden"
-                animate="visible" >
+                animate="visible"
+              >
                 <List sx={{ display: { xs: "none", sm: "flex" } }}>
                   {menus
                     .filter((item) => item.submenu === "0") // top-level items
@@ -241,12 +243,14 @@ const Navbar = () => {
                             >
                               <Typography
                                 sx={{
-                                  fontSize: '16px',
-                                  color: location.pathname === item.url
-                                    ? (theme) => theme.palette.text.secondary
-                                    : (theme) => theme.palette.text.primary,
-                                  '&:hover': {
-                                    color: (theme) => theme.palette.text.secondary,
+                                  fontSize: "16px",
+                                  color:
+                                    location.pathname === item.url
+                                      ? (theme) => theme.palette.text.secondary
+                                      : (theme) => theme.palette.text.primary,
+                                  "&:hover": {
+                                    color: (theme) =>
+                                      theme.palette.text.secondary,
                                     transition: "color 0.3s ease",
                                   },
                                 }}
@@ -264,13 +268,15 @@ const Navbar = () => {
                                 left: "50%",
                                 transform: "translateX(-50%)",
                                 minWidth: "150px",
-                                background: (theme) => theme.palette.primary.light,
+                                background: (theme) =>
+                                  theme.palette.primary.light,
                                 borderRadius: "8px",
                                 border: "1px solid #222F43",
                                 display: "block",
                                 opacity: hoverToggle === item.id ? 1 : 0,
-                                transition: "opacity 0.3s ease, transform 0.3s ease",
-                                zIndex: 10, // 
+                                transition:
+                                  "opacity 0.3s ease, transform 0.3s ease",
+                                zIndex: 10, //
                               }}
                             >
                               {subMenus.map((sub) => (
@@ -285,16 +291,19 @@ const Navbar = () => {
                                     component={RouterLink}
                                     to={sub.url}
                                     sx={{
-                                      color: (theme) => theme.palette.text.primary,
+                                      color: (theme) =>
+                                        theme.palette.text.primary,
                                       textDecoration: "none",
                                       whiteSpace: "nowrap",
                                       px: 2,
                                       py: 1,
                                       display: "block",
                                       // ✅ Change 6: added hover background for submenu items
-                                      '&:hover': {
-                                        backgroundColor: (theme) => theme.palette.primary.main,
-                                        color: (theme) => theme.palette.text.secondary,
+                                      "&:hover": {
+                                        backgroundColor: (theme) =>
+                                          theme.palette.primary.main,
+                                        color: (theme) =>
+                                          theme.palette.text.secondary,
                                       },
                                     }}
                                   >
@@ -310,6 +319,7 @@ const Navbar = () => {
                 </List>
               </Box>
               <IconButton
+                aria-hidden="menu toggle"
                 size="large"
                 edge="start"
                 color="secondary"
@@ -325,7 +335,7 @@ const Navbar = () => {
                 transition={{ duration: 1 }}
               >
                 <Search>
-                  <SearchIconWrapper>
+                  <SearchIconWrapper aria-hidden="true">
                     <SearchIcon color="secondary" />
                   </SearchIconWrapper>
                   <StyledInputBase

@@ -6,12 +6,16 @@
 
 `git push brokers master`
 
-1. Finish Single Broker
-2. Finish single post-sidebar
-3. Blogs
-4. Footer
-5. Search input logic
-
+1. Seo
+   1. add normal elements where you dont need materialui
+   2. changed Cardmedia with img
+   3. alt to images and arialabel
+   4. ==>> Removing sx and moving to styled
+2. Finish Single Broker
+3. Finish single post-sidebar
+4. Blogs
+5. Footer
+6. Search input logic
 
 ## Hostinger:
 
