@@ -2,12 +2,16 @@
 `https://comparebestbrokers.com/cbb_wp/wp-admin`
 `https://comparebestbrokers.com/cbb_wp/wp-json/wp/v2/brokers`
 `https://comparebestbrokers.com/cbb_wp/wp-json/wp-menus/v1/menus/navMenu`
-`https://comparebestbrokers.com/cbb_wp/wp-json/wp/v2/posts`
+`https://comparebestbrokers.com/cbb_wp/wp-json/wp/v2/posts_embed`
 
 `git push brokers master`
 
+1. Finish Single Broker
+2. Finish single post-sidebar
+3. Blogs
+4. Footer
+5. Search input logic
 
-linear-gradient(90deg, rgb(14, 165, 234), rgb(11, 209, 209) 51%, rgb(14, 165, 234)) var(--x, 0)/200%
 
 ## Hostinger:
 

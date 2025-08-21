@@ -20,7 +20,7 @@ function App() {
       "https://comparebestbrokers.com/cbb_wp/wp-json/wp/v2/posts?_embed"
     );
     const brokersRequest = axios.get(
-      "https://comparebestbrokers.com/cbb_wp/wp-json/wp/v2/brokers?_embed"
+      "https://comparebestbrokers.com/cbb_wp/wp-json/wp/v2/brokers"
     );
 
     Promise.all([postsRequest, brokersRequest])
@@ -29,24 +29,24 @@ function App() {
           id: post.id,
           title: post.title.rendered,
           content: post.content.rendered,
-          imageUrl: post._embedded?.["wp:featuredmedia"]?.[0]?.media_details?.sizes?.medium_large?.source_url || null,
+          imageLarge: post._embedded?.["wp:featuredmedia"]?.[0]?.media_details?.sizes?.medium_large?.source_url || null,
           slug: post.slug,
           categoryName: post._embedded?.["wp:term"]?.[0]?.[0]?.name || "Uncategorized",
           date:post.date.slice(0,10)
         }));
 
         const simplifiedBrokers = brokersRes.data.map((broker) => ({
-            id: broker.id,
-            name: broker.acf?.broker_name || broker.title.rendered,  
-            logo: broker.acf?.broker_logo?.url || null,  
+          id: broker.id,
+          name: broker.acf?.broker_name || broker.title.rendered,  
+          logo: broker.acf?.broker_logo?.url || null,  
           rating: broker.acf?.rating || 0,
           minDeposit:broker.acf?. minimum_deposit,
+          depositCurrencies: broker.acf?.deposit_currencies,
           fees: broker.acf?.fees ,
           maximum_leverage: broker.acf?.maximum_leverage || null,  
           button: broker.acf?.cta_button_url || null,
           slug: broker.slug,
         }));
-        console.log(simplifiedBrokers)
 
         setPosts(simplifiedPosts);
         setBrokers(simplifiedBrokers);

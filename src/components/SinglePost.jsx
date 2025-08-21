@@ -61,7 +61,7 @@ const SinglePost = ({ posts }) => {
                             <CardMedia
                                 sx={{ maxWidth: '731px', width: '100%', borderRadius: '16px', height: '330px', objectFit: 'cover', marginTop: '50px' }}
                                 component="img"
-                                src={single.imageUrl}
+                                src={single.imageLarge}
                                 title={single.title}
                             />
                         </SingleCard>
