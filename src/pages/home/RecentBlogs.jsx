@@ -2,6 +2,7 @@ import { Box, Card, Container, Link, Typography } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 import TextGradient from "../../components/TextGradient";
 import { motion } from "framer-motion";
+import { RecentBlogsBox, RecentBlogsCard, RecentBlogsLink } from "../../styles/homeStyled";
 
 const RecentBlogs = ({ posts }) => {
   const containerVariants = {
@@ -34,17 +35,7 @@ const RecentBlogs = ({ posts }) => {
           </Typography>
         </motion.div>
 
-        <Box
-          sx={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: "24px",
-            paddingTop: "40px",
-            justifyContent: {
-              xs: "center",
-              lg: "flex-start",
-            },
-          }}
+        <RecentBlogsBox
           component={motion.div}
           variants={containerVariants}
           initial="hidden"
@@ -54,49 +45,19 @@ const RecentBlogs = ({ posts }) => {
             return (
               <motion.div key={index} variants={itemVariants}>
                 <article>
-                  <Link
+                  <RecentBlogsLink
                     component={RouterLink}
                     to={`/blogs/${item.slug}`}
-                    sx={{
-                      overflow: "hidden",
-                      marginTop: "30px",
-                      "&:hover .hoverText": {
-                        color: "#1CC2E7",
-                        transform: "translateY(-4px)",
-                        transition: "all 0.3s ease 0s",
-                      },
-                      "&:hover .hoverImage": {
-                        transform: "scale(1.1)",
-                        transition: "all 0.3s ease 0s",
-                      },
-                      "&:hover .hoverDate": {
-                        color: "#94A9C9",
-                        transform: "translateY(-4px)",
-                        transition: "all 0.3s ease 0s",
-                      },
-                    }}
+
                   >
-                    <Card
-                      sx={{
-                        position: "relative",
-                        width: "354px",
-                        height: "415px",
-                        boxShadow: "none",
-                        borderRadius: "8px",
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "flex-end",
-                        padding: "30px 15px",
-                        overflow: "hidden",
-                      }}
+                    <RecentBlogsCard
                     >
                       <Box>
-                        <Box
-                          component="img"
+                        <img
                           src={item.imageLarge}
                           alt={item.title}
                           className="hoverImage"
-                          sx={{
+                          style={{
                             position: "absolute",
                             top: 0,
                             left: 0,
@@ -108,11 +69,10 @@ const RecentBlogs = ({ posts }) => {
                           }}
                         />
                       </Box>
-                      <Box
-                        component="img"
+                      <img
                         src="/images/bg-trans.png"
                         alt="transparent darker"
-                        sx={{
+                        style={{
                           position: "absolute",
                           top: 0,
                           left: 0,
@@ -121,7 +81,7 @@ const RecentBlogs = ({ posts }) => {
                           pointerEvents: "none",
                           zIndex: 2,
                         }}
-                      ></Box>
+                      ></img>
                       <Typography
                         className="hoverText"
                         variant="h3"
@@ -147,13 +107,13 @@ const RecentBlogs = ({ posts }) => {
                       >
                         {item.date}
                       </Typography>
-                    </Card>
-                  </Link>
+                    </RecentBlogsCard>
+                  </RecentBlogsLink>
                 </article>
               </motion.div>
             );
           })}
-        </Box>
+        </RecentBlogsBox>
       </Container>
     </Box>
   );

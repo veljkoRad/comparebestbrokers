@@ -1,22 +1,25 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
 import {
-  Card,
-  CardMedia,
   Container,
-  Link,
+  Dialog,
   Rating,
   Typography,
-  Box,
 } from "@mui/material";
-import { Link as RouterLink } from "react-router-dom";
 import TextGradient from "../../components/TextGradient";
+import { BestBrokersBox, BestBrokersCard } from "../../styles/homeStyled";
+import BrokerPopup from "../../components/BrokerPopup";
+
 
 const itemVariants = {
   hidden: { opacity: 0, y: 5 },
   visible: { opacity: 1, y: 0 },
 };
 
-const BestBrokers = ({ brokers }) => {
+const BestBrokers = ({ brokers, handleOpen, handleClose, openBroker }) => {
+
+
+
   if (!Array.isArray(brokers) || brokers.length === 0) {
     return (
       <Container sx={{ my: 16, py: 16 }}>
@@ -24,6 +27,8 @@ const BestBrokers = ({ brokers }) => {
       </Container>
     );
   }
+
+
   return (
     <Container sx={{ marginTop: 16, marginBottom: 16, paddingY: 16 }}>
       <motion.div
@@ -37,86 +42,43 @@ const BestBrokers = ({ brokers }) => {
         <motion.div variants={itemVariants}>
           <TextGradient variant="h2">Best Brokers</TextGradient>
         </motion.div>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "center",
-            flexWrap: "wrap",
-            gap: "24px",
-            marginTop: 12,
-          }}
-        >
+        <BestBrokersBox>
           {brokers.map((item, index) => (
             <motion.div key={index} variants={itemVariants}>
-              <Link component={RouterLink} to={`/brokers/${item.slug}`}>
-                <Card
+              <BestBrokersCard onClick={() => handleOpen(item)} >
+                <img
+                  style={{
+                    height: 75,
+                    width: 204,
+                    objectFit: "contain",
+                    display: "block",
+                  }}
+                  src={item.logo}
+                  alt={item.title}
+                />
+                <Rating
+                  precision={0.1}
+                  name="best-brokers-raitings"
+                  readOnly
+                  value={item.rating}
                   sx={{
-                    maxWidth: "259px",
-                    width: "100%",
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "4px",
-                    alignItems: "center",
-                    borderRadius: "16px",
-                    padding: 6,
-                    border: "1px solid #222F43",
-                    "&:hover": {
-                      background:
-                        "linear-gradient(#131C31, #131C31) padding-box, linear-gradient(to right, rgb(14, 165, 234), rgb(11, 209, 209)) border-box",
-                      borderRadius: "16px",
-                      border: "1px solid transparent",
-                      boxShadow: "rgba(11, 209, 209, 0.2) 0px 3px 20px",
-                      transform: "translateY(-2px)",
-                      transition: "all 0.25s cubic-bezier(0.02, 0.01, 0.47, 1)",
+                    "& .MuiRating-iconFilled": {
+                      color: (theme) => theme.palette.text.secondary,
+                    },
+                    "& .MuiRating-iconEmpty": {
+                      color: (theme) => theme.palette.text.secondary,
                     },
                   }}
-                >
-                  <img
-                    style={{
-                      height: 75,
-                      width: 204,
-                      objectFit: "contain",
-                      display: "block",
-                    }}
-                    src={item.logo}
-                    alt={item.title}
-                  />
-                  <Rating
-                    precision={0.1}
-                    name="best-brokers-raitings"
-                    readOnly
-                    value={item.rating}
-                    sx={{
-                      "& .MuiRating-iconFilled": {
-                        color: (theme) => theme.palette.text.secondary,
-                      },
-                      "& .MuiRating-iconEmpty": {
-                        color: (theme) => theme.palette.text.secondary,
-                      },
-                    }}
-                  />
+                />
+              </BestBrokersCard>
 
-                  {/* <CardActions sx={{ padding: 0 }}>
-                                <Link
-                                    target="_blank"
-                                    href={item.button}
-                                >
-                                    <Button
-                                        variant="outlined"
-                                        size="small"
-                                        sx={{ color: (theme) => theme.palette.text.primary }}
-                                    >
-                                        Read More
-                                    </Button>
-                                </Link>
-                            </CardActions> */}
-                </Card>
-              </Link>
             </motion.div>
           ))}
-        </Box>
+        </BestBrokersBox>
       </motion.div>
+      <Dialog open={!!openBroker} onClose={handleClose} maxWidth="sm" fullWidth sx={{ backgroundColor: 'transparent' }}>
+        <BrokerPopup openBroker={openBroker} handleClose={handleClose} />
+      </Dialog>
     </Container>
   );
 };

@@ -43,8 +43,8 @@ const theme = createTheme({
     },
 
     h4: {
-      fontSize: "18px",
-      fontWeight: 400,
+      fontSize: "20px",
+      fontWeight: 700,
     },
     button: {
       fontSize: "14px",
@@ -61,6 +61,7 @@ const theme = createTheme({
   breakpoints: {
     values: {
       xs: 0,
+      xxs:300,
       sm: 767,
       md: 991,
       lg: 1135,

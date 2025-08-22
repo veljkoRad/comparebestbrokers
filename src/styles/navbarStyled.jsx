@@ -1,5 +1,5 @@
 import React from "react"
-import { InputBase } from "@mui/material"
+import { InputBase, Link } from "@mui/material"
 import { styled, alpha } from "@mui/material/styles";
 
 export const Search = styled('div')(({ theme }) => ({
@@ -46,3 +46,22 @@ export const StyledInputBase = styled(InputBase)(({ theme }) => ({
         },
     },
 }));
+
+export const NavbarItemMobile = styled(Link)(({ theme }) => ({
+    color: (theme) => theme.palette.text.mobile,
+    textDecoration: "none",
+    fontWeight: 500,
+    width: "100%",
+    "&:focus": {
+        color: (theme) => theme.palette.text.primary,
+        transform: "translateX(5px)",
+        transition: "transform 0.4s ease",
+    }
+}))
+
+export const NavbarSubItemMobile = styled(Link)(({ theme }) => ({
+    color: (theme) => theme.palette.text.mobile,
+    textDecoration: "none",
+    width: "100%",
+    fontSize: "14px",
+}))

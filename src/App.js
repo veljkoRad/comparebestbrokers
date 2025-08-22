@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import axios from "axios";
 import Brokers from "./pages/brokers/Brokers";
-import SingleBroker from "./components/SingleBroker"
 import Home from "./pages/home/Home";
 import News from "./pages/News";
 import Blogs from "./pages/Blogs";
@@ -13,6 +12,11 @@ import SinglePost from "./components/SinglePost";
 function App() {
   const [posts, setPosts] = useState([]);
   const [brokers, setBrokers] = useState([]);
+
+   const [openBroker, setOpenBroker] = useState(null);
+
+  const handleOpen = (broker) => setOpenBroker(broker);
+  const handleClose = () => setOpenBroker(null);
   
 
     useEffect(() => {
@@ -58,12 +62,11 @@ function App() {
     <>
       <Navbar />
       <Routes>
-        <Route path="/" element={<Home posts={posts} brokers={brokers} />} />
+        <Route path="/" element={<Home posts={posts} brokers={brokers} handleOpen={handleOpen} handleClose={handleClose} openBroker={openBroker} />} />
         <Route path="/brokers" element={<Brokers />} />
         <Route path="/news" element={<News />} />
         <Route path="/blogs" element={<Blogs />} />
-        <Route path="/blogs/:slug" element={<SinglePost posts={posts} />} />
-        <Route path="/brokers/:slug" element={<SingleBroker brokers={brokers} />} />
+        <Route path="/blogs/:slug" element={<SinglePost posts={posts} brokers={brokers} handleOpen={handleOpen} handleClose={handleClose} openBroker={openBroker} />} />
       </Routes>
       <Footer />
     </>

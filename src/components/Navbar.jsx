@@ -15,6 +15,8 @@ import {
 import { Link as RouterLink, useLocation } from "react-router-dom";
 import axios from "axios";
 import {
+  NavbarItemMobile,
+  NavbarSubItemMobile,
   Search,
   SearchIconWrapper,
   StyledInputBase,
@@ -116,23 +118,12 @@ const Navbar = () => {
                             )
                           }
                         >
-                          <Link
+                          <NavbarItemMobile
                             component={RouterLink}
                             to={item.url}
-                            sx={{
-                              color: (theme) => theme.palette.text.mobile,
-                              textDecoration: "none",
-                              fontWeight: 500,
-                              width: "100%",
-                              "&:focus": {
-                                color: (theme) => theme.palette.text.primary,
-                                transform: "translateX(5px)",
-                                transition: "transform 0.4s ease",
-                              },
-                            }}
                           >
                             {item.title}
-                          </Link>
+                          </NavbarItemMobile>
                         </ListItem>
 
                         {/* Submenu items MOBILE */}
@@ -153,19 +144,12 @@ const Navbar = () => {
                                       fontWeight: "500",
                                     }}
                                   >
-                                    <Link
+                                    <NavbarSubItemMobile
                                       component={RouterLink}
                                       to={sub.url}
-                                      sx={{
-                                        color: (theme) =>
-                                          theme.palette.text.mobile,
-                                        textDecoration: "none",
-                                        width: "100%",
-                                        fontSize: "14px",
-                                      }}
                                     >
                                       {sub.title}
-                                    </Link>
+                                    </NavbarSubItemMobile>
                                   </ListItem>
                                 ))}
                             </List>
@@ -180,11 +164,10 @@ const Navbar = () => {
                 transition={{ duration: 1 }}
               >
                 <Link component={RouterLink} to="/">
-                  <Box
-                    component="img"
+                  <img
+                    alt="logo-image"
                     src="/images/cbb-icon.png"
-                    height="39px"
-                  ></Box>
+                    height="39px" />
                 </Link>
               </motion.div>
             </Box>
@@ -319,7 +302,7 @@ const Navbar = () => {
                 </List>
               </Box>
               <IconButton
-                aria-hidden="menu toggle"
+                aria-label="menu toggle"
                 size="large"
                 edge="start"
                 color="secondary"
@@ -335,7 +318,7 @@ const Navbar = () => {
                 transition={{ duration: 1 }}
               >
                 <Search>
-                  <SearchIconWrapper aria-hidden="true">
+                  <SearchIconWrapper aria-label="seach button">
                     <SearchIcon color="secondary" />
                   </SearchIconWrapper>
                   <StyledInputBase
