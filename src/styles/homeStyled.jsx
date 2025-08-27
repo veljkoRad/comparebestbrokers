@@ -9,7 +9,7 @@ export const BannerMainBox = styled(Box)(({ theme }) => ({
     [theme.breakpoints.down("sm")]: {
         height: "453px",
     },
-    background: (theme) => theme.palette.primary.light
+    background: theme.palette.primary.light
 }))
 
 export const BannerShadowBox = styled(Box)(({ theme }) => ({
@@ -29,7 +29,9 @@ export const BannerTextBox = styled(Box)(() => ({
     maxWidth: "520px",
     display: 'flex',
     flexDirection: 'column',
-    gap: '16px'
+    gap: '16px',
+    position: 'relative',
+    zIndex: '1'
 }))
 
 export const BannerButton = styled(Button)(() => ({
@@ -48,7 +50,7 @@ export const BestBrokersBox = styled(Box)(() => ({
     justifyContent: "center",
     flexWrap: "wrap",
     gap: "24px",
-    marginTop: 12,
+    marginTop: '40px',
 }))
 
 export const BestBrokersCard = styled(Card)(() => ({
@@ -111,6 +113,10 @@ export const RecentBlogsCard = styled(Card)(({ theme }) => ({
     position: "relative",
     width: "354px",
     height: "415px",
+    [theme.breakpoints.down("md")]: {
+        width: "300px",
+        height: "352px",
+    },
     boxShadow: "none",
     borderRadius: "8px",
     display: "flex",

@@ -9,6 +9,7 @@ import "@fontsource/noto-sans/400.css";
 import "@fontsource/noto-sans/500.css";
 import "@fontsource/noto-sans/700.css";
 import "@fontsource/noto-sans/800.css";
+import { color } from "framer-motion";
 
 const theme = createTheme({
   spacing: 4,
@@ -21,7 +22,7 @@ const theme = createTheme({
       main: "#b9e0f2", 
     },
     text: {
-      primary: "#94A9C9", secondary:"#1CC2E7", white:'#fff', black:'#000',mobile:'#E6F0FF'
+      primary: "#94A9C9", secondary:"#1CC2E7", white:'#fff', black:'#000',mobile:'#E6F0FF',gray:'#66768f',pagination:'#222f43'
     },
     background: { default: "#0F172A", paper:'#0F172A' }
   },
@@ -30,16 +31,20 @@ const theme = createTheme({
     h1: {
       fontSize: "64px",
       fontWeight: 800,
-      "@media (max-width:766px)": { fontSize: "32px" },
+      "@media (max-width:767px)": { fontSize: "44px" },
+      "@media (max-width:575px)": { fontSize: "34px" },
     },
     h2: {
       fontSize: "45px",
       fontWeight: 700,
-      color:(theme)=>theme.palette.secondary.main
+      color:(theme)=>theme.palette.secondary.main,
+       "@media (max-width:767px)": { fontSize: "35px" },
+       "@media (max-width:575px)": { fontSize: "20px" },
     },
      h3: {
       fontSize: "24px",
       fontWeight: 700,
+      "@media (max-width:767px)": { fontSize: "17px" },
     },
 
     h4: {
@@ -65,7 +70,7 @@ const theme = createTheme({
       sm: 767,
       md: 991,
       lg: 1135,
-      xl: 1440,
+      xl: 1200,
     },
   },
   components: {
@@ -105,6 +110,26 @@ const theme = createTheme({
           minHeight: "72px",
           justifyContent: "space-between",
         },
+      },
+    },
+    MuiPaginationItem: {
+      styleOverrides: {
+        // Default style
+        root: ({theme}) =>({
+          color:theme.palette.text.white,
+          background:theme.palette.text.pagination,
+          '&.Mui-selected': {
+            backgroundColor: theme.palette.text.white,
+            color:theme.palette.primary.main
+          },
+          '&:hover': {
+            backgroundColor: theme.palette.text.secondary,
+          },
+          '&.Mui-selected:hover': {
+            backgroundColor: theme.palette.text.secondary,
+      },
+        }),
+
       },
     },
   },

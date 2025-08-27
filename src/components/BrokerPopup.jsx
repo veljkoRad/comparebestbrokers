@@ -1,9 +1,9 @@
-import { Link, Rating, Typography, IconButton, } from "@mui/material"
+import { Link, Rating, Typography, IconButton, Box, } from "@mui/material"
 import { Link as RouterLink } from "react-router-dom"
 import { motion, AnimatePresence } from "framer-motion";
-import { BrokerPopupContainer, SingleBrokerButton, SingleBrokerCard } from "../styles/componentStyled"
 import TextGradient from "./TextGradient"
 import CloseIcon from "@mui/icons-material/Close";
+import { PopupButtonAccount, PopupButtonLearn, PopupButtonText, PopupCard, PopupContainer } from "../styles/componentStyled"
 
 
 const popupVariants = {
@@ -23,8 +23,7 @@ const BrokerPopup = ({ openBroker, handleClose }) => {
                     exit="exit"
                     transition={{ duration: 0.5, ease: "easeInOut" }}
                 >
-                    <SingleBrokerCard>
-
+                    <PopupCard>
                         <IconButton
                             aria-hidden="close menu"
                             color="secondary"
@@ -32,7 +31,10 @@ const BrokerPopup = ({ openBroker, handleClose }) => {
                             sx={{
                                 padding: "0",
                                 borderRadius: "0",
-                                marginLeft: "auto",
+                                position: 'absolute',
+                                right: '15px',
+                                top: '15px'
+
                             }}
                         >
                             <CloseIcon sx={{ color: (theme) => theme.palette.text.secondary }} fontSize="large" />
@@ -64,31 +66,38 @@ const BrokerPopup = ({ openBroker, handleClose }) => {
                                 },
                             }}
                         />
-                        <BrokerPopupContainer sx={{}} maxWidth='xxs'>
-                            <Typography variant="h4" textAlign='center'>
-                                Minimum Deposit: {openBroker?.minDeposit}{" "}
+                        <PopupContainer sx={{}} maxWidth='xxs'>
+                            <Typography textAlign='center'>
+                                <strong>Minimum Deposit: </strong>{openBroker?.minDeposit}{" "}
                             </Typography>
-                            <Typography variant="h4" textAlign='center'>Fees: {openBroker?.fees}</Typography>
-                            <Typography variant="h4" textAlign='center'>
-                                Maximum Leverage: {openBroker?.maximum_leverage}
+                            <Typography textAlign='center'><strong>Fees: </strong>{openBroker?.fees}</Typography>
+                            <Typography textAlign='center'>
+                                <strong>Maximum Leverage: </strong>{openBroker?.maximum_leverage}
                             </Typography>
-                            <Typography variant="h4" textAlign='center'>
-                                Deposit Currencies: {openBroker?.depositCurrencies}
+                            <Typography textAlign='center'>
+                                <strong>Deposit Currencies: </strong>{openBroker?.depositCurrencies}
                             </Typography>
-                            <Link component={RouterLink} to={openBroker?.button} target="_blank">
-                                <SingleBrokerButton
-                                    variant="contained"
-                                >
-                                    <Typography
-                                        variant="buttonMain"
-                                        sx={{ color: (theme) => theme.palette.text.white }}
+                            <Box sx={{ display: 'flex', gap: "15px" }}>
+                                <Link component={RouterLink} to={openBroker?.button} target="_blank">
+                                    <PopupButtonAccount
+                                        variant="contained"
                                     >
-                                        Learn more
-                                    </Typography>
-                                </SingleBrokerButton>
-                            </Link>
-                        </BrokerPopupContainer>
-                    </SingleBrokerCard>
+                                        <PopupButtonText>
+                                            Open Account
+                                        </PopupButtonText>
+                                    </PopupButtonAccount>
+                                </Link>
+                                <Link component={RouterLink} to={`/brokers/${openBroker?.slug}`} sx={{ width: '100%' }}>
+                                    <PopupButtonLearn variant="contained">
+                                        <PopupButtonText>
+                                            Learn More
+                                        </PopupButtonText>
+                                    </PopupButtonLearn>
+                                </Link>
+                            </Box>
+
+                        </PopupContainer>
+                    </PopupCard>
                 </motion.div>
             )
             }

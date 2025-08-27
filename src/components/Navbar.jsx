@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import {
+  Autocomplete,
   Drawer,
   AppBar,
   Box,
@@ -11,26 +12,107 @@ import {
   ListItem,
   Toolbar,
   Typography,
+  TextField,
 } from "@mui/material";
-import { Link as RouterLink, useLocation } from "react-router-dom";
-import axios from "axios";
+import { Link as RouterLink, useLocation, useNavigate } from "react-router-dom";
 import {
   NavbarItemMobile,
   NavbarSubItemMobile,
-  Search,
-  SearchIconWrapper,
-  StyledInputBase,
 } from "../styles/navbarStyled";
 import MenuIcon from "@mui/icons-material/Menu";
-import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
 
-const Navbar = () => {
+
+
+const Navbar = ({ menus, acf, posts, brokers }) => {
+
+
+  const autoComplete = (
+    <Box sx={{ width: 145 }}>
+      <Autocomplete
+        disablePortal
+        freeSolo
+        openOnFocus
+        options={Array.isArray(posts) && Array.isArray(brokers) ? [
+          ...posts.map(post => ({ ...post, type: 'post' })),
+          ...brokers.map(broker => ({ ...broker, type: 'broker' })),
+        ] : []}
+        onChange={(event, newValue) => {
+          if (!newValue) return;
+
+          if (typeof newValue === "object") {
+            // Navigate based on type
+            if (newValue.type === "post" && newValue.slug) {
+              navigate(`/blogs/${newValue.slug}`);
+            } else if (newValue.type === "broker" && newValue.slug) {
+              navigate(`/brokers/${newValue.slug}`);
+            }
+          } else if (typeof newValue === "string") {
+            navigate(`/search?query=${encodeURIComponent(newValue)}`);
+          }
+        }}
+        filterOptions={(options, { inputValue }) =>
+          options.filter(option => {
+            if (option.type === 'post') {
+              return (
+                option.title?.toLowerCase().includes(inputValue.toLowerCase()) ||
+                option.content?.toLowerCase().includes(inputValue.toLowerCase())
+              );
+            } else if (option.type === 'broker') {
+              return option.name?.toLowerCase().includes(inputValue.toLowerCase());
+            }
+            return false;
+          })
+            .slice(0, 5)
+        }
+        getOptionLabel={option =>
+          typeof option === 'string'
+            ? option
+            : option.type === 'post'
+              ? option.title || ''
+              : option.type === 'broker'
+                ? option.name || ''
+                : ''
+        }
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            variant="outlined"
+            color="secondary"
+            size="small"
+            focused
+            placeholder="Search"
+            hiddenLabel
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                const input = e.target.value.trim();
+                if (input) {
+                  navigate(`/search?query=${encodeURIComponent(input)}`);
+                }
+              }
+            }}
+            sx={{ width: "100%" }}
+          />
+        )}
+        noOptionsText="No results found"
+        ListboxProps={{
+          sx: {
+            "& .MuiAutocomplete-option": {
+              color: "white",
+              fontSize: "9px",
+            },
+          },
+        }}
+      />
+    </Box>
+  );
+
   const [toggleMenu, setToggleMenu] = useState(false);
   const [toggleMenuMobile, setToggleMenuMobile] = useState(false);
   const [hoverToggle, setHoverToggle] = useState(null);
-  const [menus, setMenus] = useState([]);
   const location = useLocation();
+  const navigate = useNavigate();
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -51,26 +133,8 @@ const Navbar = () => {
   };
 
   const toggleNavMenu = () => {
-    setToggleMenu(!toggleMenu);
+    setToggleMenu((prev) => !prev);
   };
-
-  useEffect(() => {
-    axios
-      .get(
-        "https://comparebestbrokers.com/cbb_wp/wp-json/wp-menus/v1/menus/navMenu",
-        {}
-      )
-      .then((response) => {
-        const simplifiedPosts = response.data.map((post) => ({
-          id: post.ID,
-          title: post.post_title,
-          url: post.url,
-          submenu: post.menu_item_parent,
-        }));
-        setMenus(simplifiedPosts);
-      })
-      .catch((error) => console.error(error));
-  }, []);
 
   return (
     <Box sx={{ marginTop: "15px" }}>
@@ -81,7 +145,7 @@ const Navbar = () => {
               <Drawer
                 anchor="top"
                 open={toggleMenu}
-                onClose={toggleNavMenu}
+                onClose={() => setToggleMenu(false)}
                 sx={{
                   display: { xs: "flex", sm: "none" },
                   alignItems: "flex-end",
@@ -121,6 +185,7 @@ const Navbar = () => {
                           <NavbarItemMobile
                             component={RouterLink}
                             to={item.url}
+                            onClick={() => setToggleMenu(false)}
                           >
                             {item.title}
                           </NavbarItemMobile>
@@ -166,8 +231,8 @@ const Navbar = () => {
                 <Link component={RouterLink} to="/">
                   <img
                     alt="logo-image"
-                    src="/images/cbb-icon.png"
-                    height="39px" />
+                    src={acf.header.logo}
+                    height="45px" />
                 </Link>
               </motion.div>
             </Box>
@@ -281,7 +346,6 @@ const Navbar = () => {
                                       px: 2,
                                       py: 1,
                                       display: "block",
-                                      // ✅ Change 6: added hover background for submenu items
                                       "&:hover": {
                                         backgroundColor: (theme) =>
                                           theme.palette.primary.main,
@@ -317,15 +381,7 @@ const Navbar = () => {
                 animate={{ opacity: 1 }}
                 transition={{ duration: 1 }}
               >
-                <Search>
-                  <SearchIconWrapper aria-label="seach button">
-                    <SearchIcon color="secondary" />
-                  </SearchIconWrapper>
-                  <StyledInputBase
-                    placeholder="Search…"
-                    inputProps={{ "aria-label": "search" }}
-                  />
-                </Search>
+                {autoComplete}
               </motion.div>
             </Box>
           </Toolbar>

@@ -3,12 +3,13 @@ import { Box, Container, IconButton, } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import TextGradient from "./TextGradient";
-import { HtmlWrapper, SinglePostCard } from "../styles/componentStyled";
+import { HtmlWrapper, SingleBoxContainer, SinglePostCard } from "../styles/componentStyled";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Sidebar from "./Sidebar";
 
 
-const SinglePost = ({ posts, brokers, handleOpen, handleClose, openBroker }) => {
+
+const SinglePost = ({ posts, brokers, handleOpen, handleClose, openBroker, categories, acf }) => {
   const { slug } = useParams();
   const [single, setSingle] = useState(null);
 
@@ -30,7 +31,7 @@ const SinglePost = ({ posts, brokers, handleOpen, handleClose, openBroker }) => 
     <>
       <Box>
         <Container
-          maxWidth="md"
+          maxWidth="lg"
           component="section"
           sx={{ paddingTop: "10px", paddingBottom: "50px" }}
         >
@@ -45,20 +46,20 @@ const SinglePost = ({ posts, brokers, handleOpen, handleClose, openBroker }) => 
             <Box
               style={{ borderBottom: "1px solid #222F43", marginBottom: "50px", marginTop: '10px' }}
             />
-            <div style={{ display: 'flex', gap: '24px' }}>
+            <SingleBoxContainer>
               <div style={{ maxWidth: '730px' }}>
                 <TextGradient variant="h2" sx>
                   {single.title}
                 </TextGradient>
                 <SinglePostCard>
-                  <img
-                    style={{
+                  <Box
+                    component='img'
+                    sx={{
                       maxWidth: "731px",
                       width: "100%",
                       borderRadius: "16px",
-                      height: "330px",
+                      height: { xs: '180px', sm: '330px' },
                       objectFit: "cover",
-                      marginTop: "50px",
                     }}
                     src={single.imageLarge}
                     alt={single.title}
@@ -66,8 +67,8 @@ const SinglePost = ({ posts, brokers, handleOpen, handleClose, openBroker }) => 
                 </SinglePostCard>
                 <HtmlWrapper dangerouslySetInnerHTML={{ __html: single.content }} />
               </div>
-              <Sidebar brokers={brokers} handleOpen={handleOpen} handleClose={handleClose} openBroker={openBroker} />
-            </div>
+              <Sidebar brokers={brokers} handleOpen={handleOpen} handleClose={handleClose} openBroker={openBroker} categories={categories} acf={acf} />
+            </SingleBoxContainer>
           </motion.div>
         </Container>
       </Box >

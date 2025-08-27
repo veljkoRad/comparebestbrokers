@@ -4,7 +4,7 @@ import TextGradient from "../../components/TextGradient";
 import { motion } from "framer-motion";
 import { RecentBlogsBox, RecentBlogsCard, RecentBlogsLink } from "../../styles/homeStyled";
 
-const RecentBlogs = ({ posts }) => {
+const RecentBlogs = ({ posts, acf }) => {
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -28,10 +28,19 @@ const RecentBlogs = ({ posts }) => {
           animate={{ opacity: 1 }}
           transition={{ duration: 1 }}
         >
-          <TextGradient variant="h2">Recent news</TextGradient>
+          {acf.home.bannerImage && acf.home.bannerLink && (
+            <Link component={RouterLink} to={acf.home.bannerLink} target="_blank">
+              <img
+                src={acf.home.bannerImage}
+                alt="banner"
+                style={{ display: "block", margin: "0 auto 70px", width:'100%' }}
+              />
+            </Link>
+          )}
+          <TextGradient variant="h2">{acf.home.homeBlogsTitle}</TextGradient>
 
           <Typography variant="h3" color="text" sx={{ marginTop: "10px" }}>
-            Explore these featured brokers to get started.
+            {acf.home.homeBlogsSubtitle}
           </Typography>
         </motion.div>
 
@@ -50,25 +59,23 @@ const RecentBlogs = ({ posts }) => {
                     to={`/blogs/${item.slug}`}
 
                   >
-                    <RecentBlogsCard
-                    >
-                      <Box>
-                        <img
-                          src={item.imageLarge}
-                          alt={item.title}
-                          className="hoverImage"
-                          style={{
-                            position: "absolute",
-                            top: 0,
-                            left: 0,
-                            width: "354px",
-                            height: "415px",
-                            objectFit: "cover",
-                            objectPosition: "center",
-                            transition: "transform 0.3s ease",
-                          }}
-                        />
-                      </Box>
+                    <RecentBlogsCard>
+                      <Box
+                        component='img'
+                        src={item.imageLarge}
+                        alt={item.title}
+                        className="hoverImage"
+                        sx={{
+                          position: "absolute",
+                          top: 0,
+                          left: 0,
+                          width: { xs: '300px', md: '354px' },
+                          height: { xs: '352px', md: '415px' },
+                          objectFit: "cover",
+                          objectPosition: "center",
+                          transition: "transform 0.3s ease",
+                        }}
+                      />
                       <img
                         src="/images/bg-trans.png"
                         alt="transparent darker"

@@ -14,7 +14,6 @@ const TextGradient = ({ children, variant = "h1" }) => {
         <TextGradientTypography
             component='span'
             variant={variant}
-            textAlign='center'
         >
             {children}
         </TextGradientTypography>

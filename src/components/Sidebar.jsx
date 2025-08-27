@@ -1,45 +1,32 @@
-import { Box, Card, Dialog, Rating } from '@mui/material'
+import { Box, Dialog, Link, Rating } from '@mui/material'
+import { Link as RouterLink } from 'react-router-dom';
 import TextGradient from './TextGradient'
-import { styled } from "@mui/material/styles";
 import BrokerPopup from './BrokerPopup';
-
-const SidebarUnderline = styled(Box)(({ theme }) => ({
-    width: '96px',
-    height: '3px',
-    backgroundColor: theme.palette.text.secondary,
-    marginTop: '10px'
-}))
-
-const SidebarBox = styled(Box)(({ theme }) => ({
-    cursor: 'pointer',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    border: '1px solid #222F43',
-    padding: '15px',
-    borderRadius: '16px',
-    "&:hover": {
-        background:
-            "linear-gradient(#131C31, #131C31) padding-box, linear-gradient(to right, rgb(14, 165, 234), rgb(11, 209, 209)) border-box",
-        borderRadius: "16px",
-        border: "1px solid transparent",
-        boxShadow: "rgba(11, 209, 209, 0.2) 0px 3px 20px",
-        transform: "translateY(-2px)",
-        transition: "all 0.25s cubic-bezier(0.02, 0.01, 0.47, 1)",
-    }
-}))
+import { SidebarBrokerItem, SidebarCategoryItem, SidebarContainer, SidebarUnderline } from '../styles/componentStyled';
 
 
 
-const Sidebar = ({ brokers, handleClose, handleOpen, openBroker }) => {
 
+
+
+const Sidebar = ({ brokers, handleClose, handleOpen, openBroker, categories, acf }) => {
+console.log("Sidebar image:", acf?.sidebar?.sidebarBannerImage);
     return (
-        <div style={{ width: '100%' }}>
-            <TextGradient variant="h4">Best Brokers</TextGradient>
-            <SidebarUnderline />
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', marginTop: '20px' }}>
+        <Box sx={{ width: '100%', maxWidth: { xs: '730px', md: '357px' } }}>
+            {acf.sidebar.sidebarBannerImage && acf.sidebar.sidebarBannerLink && (
+                <Link component={RouterLink} to={acf.sidebar.sidebarBannerLink} target="_blank">
+                    <img
+                        src={acf.sidebar.sidebarBannerImage}
+                        alt="banner"
+                        style={{ display: "block", margin: "0 auto 25px" }}
+                    />
+                </Link>
+            )}
+            <SidebarContainer >
+                <TextGradient variant="h4" >{acf.sidebar.brokersSidebarTitle}</TextGradient>
+                <SidebarUnderline />
                 {brokers.slice(0, 6).map((item, index) => (
-                    <SidebarBox onClick={() => handleOpen(item)} >
+                    <SidebarBrokerItem onClick={() => handleOpen(item)} key={index} >
                         <img
                             style={{
                                 width: 80,
@@ -65,16 +52,34 @@ const Sidebar = ({ brokers, handleClose, handleOpen, openBroker }) => {
                                 },
                             }}
                         />
-                    </SidebarBox>
+                    </SidebarBrokerItem>
                 ))
                 }
+            </SidebarContainer>
+            {/* <SidebarContainer>
+                <TextGradient variant="h4" sx={{ marginTop: '30px' }} >Categories</TextGradient>
+                <SidebarUnderline />
+                <Box sx={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                    {
+                        categories.map((item, index) => (
+                            <SidebarCategoryItem key={index} sx={{
 
-                <Dialog open={!!openBroker} onClose={handleClose} maxWidth="sm" fullWidth sx={{ backgroundColor: 'transparent' }}>
-                    <BrokerPopup openBroker={openBroker} handleClose={handleClose} />
-                </Dialog>
-            </div>
+                            }}>
+                                <Typography className='hoverCategory' variant='button' color='text.white'>
+                                    {item}
+                                </Typography>
 
-        </div >
+                            </SidebarCategoryItem>
+                        ))
+                    }
+                </Box>
+            </SidebarContainer> */}
+
+
+            <Dialog open={!!openBroker} onClose={handleClose} maxWidth="sm" fullWidth sx={{ backgroundColor: 'transparent' }}>
+                <BrokerPopup openBroker={openBroker} handleClose={handleClose} />
+            </Dialog>
+        </Box >
     )
 }
 

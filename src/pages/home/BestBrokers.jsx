@@ -16,7 +16,7 @@ const itemVariants = {
   visible: { opacity: 1, y: 0 },
 };
 
-const BestBrokers = ({ brokers, handleOpen, handleClose, openBroker }) => {
+const BestBrokers = ({ brokers, handleOpen, handleClose, openBroker, acf }) => {
 
 
 
@@ -40,7 +40,10 @@ const BestBrokers = ({ brokers, handleOpen, handleClose, openBroker }) => {
         }}
       >
         <motion.div variants={itemVariants}>
-          <TextGradient variant="h2">Best Brokers</TextGradient>
+          <TextGradient variant="h2">{acf.home.homeBrokersTitle}</TextGradient>
+          <Typography variant="h3" color="text" sx={{ marginTop: "10px" }}>
+            {acf.home.homeBrokersSubtitle}
+          </Typography>
         </motion.div>
         <BestBrokersBox>
           {brokers.map((item, index) => (

@@ -3,18 +3,26 @@
 `https://comparebestbrokers.com/cbb_wp/wp-json/wp/v2/brokers`
 `https://comparebestbrokers.com/cbb_wp/wp-json/wp-menus/v1/menus/navMenu`
 `https://comparebestbrokers.com/cbb_wp/wp-json/wp/v2/posts_embed`
+`https://comparebestbrokers.com/cbb_wp/wp-json/acf/v2/options`
 
 `git push brokers master`
 
 
 
-1. Finish single post-sidebar:
-    1. Brokers for mobile
-    2. Categories
-2. Blogs
-3. Footer
-4. Search input logic
-5. Broker order change in wp-admin
+
+
+
+
+
+2. Add GTM
+
+
+
+Novi task:
+a.nakon submita salje na mejl
+b.da li moze da nakon submita da salje data na goolge sheet
+c. nakon submita rediretkuje na thank you stranu.
+
 
 ## Hostinger:
 
@@ -24,4 +32,4 @@
 ## WP-admin
 
 - user: Veljko
-- pass: VeljRad8847
+- pass: VeljRad847
