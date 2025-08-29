@@ -1,12 +1,13 @@
-import { useState } from "react";
 import { motion } from "framer-motion";
 import {
   Container,
   Dialog,
+  Link,
   Rating,
   Typography,
 } from "@mui/material";
 import TextGradient from "../../components/TextGradient";
+import { Link as RouterLink } from "react-router-dom";
 import { BestBrokersBox, BestBrokersCard } from "../../styles/homeStyled";
 import BrokerPopup from "../../components/BrokerPopup";
 
@@ -31,6 +32,15 @@ const BestBrokers = ({ brokers, handleOpen, handleClose, openBroker, acf }) => {
 
   return (
     <Container sx={{ marginTop: 16, marginBottom: 16, paddingY: 16 }}>
+      {acf.home.banner2Image && acf.home.banner2Link && (
+        <Link component={RouterLink} to={acf.home.banner2Link} target="_blank">
+          <img
+            src={acf.home.banner2Image}
+            alt="banner"
+            style={{ display: "block", margin: "0 auto 70px", width: '100%' }}
+          />
+        </Link>
+      )}
       <motion.div
         initial="hidden"
         whileInView="visible"
@@ -79,6 +89,15 @@ const BestBrokers = ({ brokers, handleOpen, handleClose, openBroker, acf }) => {
           ))}
         </BestBrokersBox>
       </motion.div>
+      {acf.home.banner3Image && acf.home.banner3Link && (
+        <Link component={RouterLink} to={acf.home.banner3Link} target="_blank">
+          <img
+            src={acf.home.banner3Image}
+            alt="banner"
+            style={{ display: "block", margin: "70px auto", width: '100%' }}
+          />
+        </Link>
+      )}
       <Dialog open={!!openBroker} onClose={handleClose} maxWidth="sm" fullWidth sx={{ backgroundColor: 'transparent' }}>
         <BrokerPopup openBroker={openBroker} handleClose={handleClose} />
       </Dialog>

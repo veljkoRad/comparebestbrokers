@@ -48,7 +48,7 @@ export const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export const NavbarItemMobile = styled(Link)(({ theme }) => ({
-    color: (theme) => theme.palette.text.mobile,
+    color: theme.palette.text.white,
     textDecoration: "none",
     fontWeight: 500,
     width: "100%",

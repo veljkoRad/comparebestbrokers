@@ -14,11 +14,13 @@
 
 
 
-2. Add GTM
+2. Form, napravi posebnu stranicu koja se nalazi u meniju treba da izgleda kao single page, ali u sidebar umesto ovog sto postoji ce da postoji sticky form.
+    -First Name, Last Name, phone Number, I agree checkmark
+3. Add GTM
 
 
 
-Novi task:
+3. Novi task:
 a.nakon submita salje na mejl
 b.da li moze da nakon submita da salje data na goolge sheet
 c. nakon submita rediretkuje na thank you stranu.

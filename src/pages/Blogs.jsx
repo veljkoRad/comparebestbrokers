@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { Box, Container, Pagination, Typography } from "@mui/material";
+import { Box, Container, Link, Pagination, Typography } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 import TextGradient from "../components/TextGradient";
 import { BlogLink } from "../styles/blogsStyled";
@@ -8,7 +8,7 @@ import { BlogLink } from "../styles/blogsStyled";
 const Blogs = ({ posts, acf }) => {
 
   const [currentPage, setCurrentPage] = useState(1);
-  const postsPerPage = 6;
+  const postsPerPage = 8;
 
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
@@ -17,6 +17,13 @@ const Blogs = ({ posts, acf }) => {
   const handleChangePage = (event, value) => {
     setCurrentPage(value);
   };
+
+
+  const blogsWithBanner = [
+    ...currentPosts.slice(0, 4),
+    { type: 'banner' },
+    ...currentPosts.slice(4)
+  ];
 
   return (
     <Container sx={{ paddingY: '50px' }}>
@@ -32,7 +39,23 @@ const Blogs = ({ posts, acf }) => {
         />
         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '24px', justifyContent: 'center' }}>
           {
-            currentPosts.map((item, index) => {
+            blogsWithBanner.map((item, index) => {
+
+              if (item.type === 'banner') {
+                return (
+
+                  acf.home.bannerImage && acf.home.bannerLink && (
+                    <Link component={RouterLink} to={acf.home.bannerLink} target="_blank">
+                      <img
+                        src={acf.home.bannerImage}
+                        alt="banner"
+                        style={{ display: "block", margin: "auto", width: '100%' }}
+                      />
+                    </Link>
+                  )
+
+                )
+              }
               const shortContent = item.content.length > 150 ? item.content.slice(0, 150) + '...' : item.content;
               const shortTitle = item.title.length > 70 ? item.title.slice(0, 70) + '...' : item.title;
 
@@ -62,6 +85,7 @@ const Blogs = ({ posts, acf }) => {
 
                 </BlogLink>
               )
+
             })
           }
         </Box>

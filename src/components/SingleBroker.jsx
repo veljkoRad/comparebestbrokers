@@ -1,9 +1,11 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
-import { Box, Container, IconButton, Rating, Typography } from "@mui/material";
+import { Box, Container, IconButton, Link, Rating, Typography } from "@mui/material";
+import { Link as RouterLink } from "react-router-dom";
 import TextGradient from "./TextGradient";
 import { SingleBoxContainer, SingleBrokerHtmlContent } from "../styles/componentStyled";
+import { BrokersButtonAccount } from "../styles/brokersStyled";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Sidebar from "./Sidebar";
 
@@ -36,7 +38,7 @@ const SingleBroker = ({ brokers, handleOpen, handleClose, openBroker, categories
                     style={{ borderBottom: "1px solid #222F43", marginBottom: "50px", marginTop: '10px' }}
                 />
                 <SingleBoxContainer>
-                    <div style={{ minHeight: 570, width: '100%', maxWidth: '730px' }}>
+                    <div style={{ minHeight: 570, width: '100%', maxWidth: '730px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
 
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', }}>
                             <TextGradient variant="h1">{single.name}</TextGradient>
@@ -66,13 +68,51 @@ const SingleBroker = ({ brokers, handleOpen, handleClose, openBroker, categories
                                 }}
                             />
                             <Typography variant="button">{single.rating} Overall</Typography>
+                            {single.ctaTop && (
+                                <Link component={RouterLink} to={single.button} target="_blank" sx={{}}>
+                                    <BrokersButtonAccount variant="contained" sx={{ width: '156px', marginTop: '30px' }}>
+                                        <Typography
+                                            variant="buttonMain"
+                                            sx={{ color: (theme) => theme.palette.text.white }}
+                                        >
+                                            Open Account
+                                        </Typography>
+                                    </BrokersButtonAccount>
+                                </Link>
+                            )}
                         </div>
                         <SingleBrokerHtmlContent dangerouslySetInnerHTML={{ __html: single.shortDescription }} />
                         <SingleBrokerHtmlContent dangerouslySetInnerHTML={{ __html: single.keyBenefits }} />
-                        <Typography ><strong>Minimum Deposit:</strong> {single.minDeposit}</Typography>
-                        <Typography ><strong>Fees:</strong> {single.fees}</Typography>
-                        <Typography ><strong>Maximum Leverage:</strong> {single.maximum_leverage}</Typography>
-                        <Typography ><strong>Maximum Leverage:</strong> {single.depositCurrencies}</Typography>
+                        {single.ctaMid && (
+                            <Link component={RouterLink} to={single.button} target="_blank" sx={{}}>
+                                <BrokersButtonAccount variant="contained" sx={{ width: '156px', marginTop: '30px', marginBottom: '30px' }}>
+                                    <Typography
+                                        variant="buttonMain"
+                                        sx={{ color: (theme) => theme.palette.text.white }}
+                                    >
+                                        Open Account
+                                    </Typography>
+                                </BrokersButtonAccount>
+                            </Link>
+                        )}
+                        <div style={{ marginRight: 'auto' }}>
+                            <Typography ><strong>Minimum Deposit:</strong> {single.minDeposit}</Typography>
+                            <Typography ><strong>Fees:</strong> {single.fees}</Typography>
+                            <Typography ><strong>Maximum Leverage:</strong> {single.maximum_leverage}</Typography>
+                            <Typography ><strong>Maximum Leverage:</strong> {single.depositCurrencies}</Typography>
+                        </div>
+                        {single.ctaBottom && (
+                            <Link component={RouterLink} to={single.button} target="_blank" sx={{}}>
+                                <BrokersButtonAccount variant="contained" sx={{ width: '156px', marginTop: '30px' }}>
+                                    <Typography
+                                        variant="buttonMain"
+                                        sx={{ color: (theme) => theme.palette.text.white }}
+                                    >
+                                        Open Account
+                                    </Typography>
+                                </BrokersButtonAccount>
+                            </Link>
+                        )}
                     </div>
                     <Sidebar brokers={brokers} handleOpen={handleOpen} handleClose={handleClose} openBroker={openBroker} categories={categories} acf={acf} />
                 </SingleBoxContainer>

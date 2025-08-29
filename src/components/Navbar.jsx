@@ -295,7 +295,7 @@ const Navbar = ({ menus, acf, posts, brokers }) => {
                                   color:
                                     location.pathname === item.url
                                       ? (theme) => theme.palette.text.secondary
-                                      : (theme) => theme.palette.text.primary,
+                                      : (theme) => theme.palette.text.white,
                                   "&:hover": {
                                     color: (theme) =>
                                       theme.palette.text.secondary,

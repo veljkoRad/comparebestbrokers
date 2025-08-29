@@ -10,6 +10,7 @@ import SinglePost from "./components/SinglePost";
 import SingleBroker from "./components/SingleBroker";
 import { Box, CircularProgress } from "@mui/material";
 import SearchResult from "./components/SearchResult";
+import Blog2 from "./pages/Blog2";
 
 function App() {
   const [posts, setPosts] = useState([]);
@@ -73,6 +74,9 @@ function App() {
           fees: broker.acf?.fees ,
           maximum_leverage: broker.acf?.maximum_leverage || null,  
           button: broker.acf?.cta_button_url || null,
+          ctaTop: broker.acf?.broker_cta_1 || null,
+          ctaMid: broker.acf?.broker_cta_2 || null,
+          ctaBottom: broker.acf?.broker_cta_3 || null,
           slug: broker.slug,
           shortDescription: broker.acf?.short_description || null,
           keyBenefits: broker.acf?.key_benefits || null,
@@ -80,6 +84,7 @@ function App() {
 
         const simplifiedACF = {
           home: {
+            heroImage: ACFRes.data.acf?.home?.hero_image || "",
             heroTitleWhite: ACFRes.data.acf?.home?.hero_title_white || "",
             heroTitleBlue: ACFRes.data.acf?.home?.hero_title_blue || "",
             heroSubtitle: ACFRes.data.acf?.home?.hero_subtitle || "",
@@ -87,6 +92,10 @@ function App() {
             heroButtonText: ACFRes.data.acf?.home?.hero_button_text || "",
             bannerLink: ACFRes.data.acf?.home?.banner_link || "",
             bannerImage: ACFRes.data.acf?.home?.banner_image || "",
+            banner2Link: ACFRes.data.acf?.home?.banner_2_link || "",
+            banner2Image: ACFRes.data.acf?.home?.banner_2_image || "",
+            banner3Link: ACFRes.data.acf?.home?.banner_3_link || "",
+            banner3Image: ACFRes.data.acf?.home?.banner_3_image || "",
             homeBlogsTitle: ACFRes.data.acf?.home?.home_blogs_title || "",
             homeBlogsSubtitle: ACFRes.data.acf?.home?.home_blogs_subtitle || "",
             homeBrokersTitle: ACFRes.data.acf?.home?.home_brokers_title || "",
@@ -115,6 +124,11 @@ function App() {
             sidebarBannerLink: ACFRes.data.acf?.sidebar?.sidebar_banner_link || "",
             sidebarBannerImage: ACFRes.data.acf?.sidebar?.sidebar_banner_image.url || "",
           },
+          blog_2 :{
+            title: ACFRes.data.acf?.blog_2?.blog_2_title || "",
+            content: ACFRes.data.acf?.blog_2?.blog_2_content || "",
+            image: ACFRes.data.acf?.blog_2?.blog_2_image || "",
+          }
         };
 
       
@@ -122,7 +136,6 @@ function App() {
         const allCategories =categoriesRes.data.map((categorie)=>categorie.name);
         const filteredCategories = allCategories.filter(cat => cat !== "Uncategorized");
         setCategories(filteredCategories);
-       console.log(simplifiedACF);
         setPosts(simplifiedPosts);
         setBrokers(simplifiedBrokers);
         setMenus(simplifiedMenu);
@@ -151,10 +164,11 @@ return (
         <Navbar menus={menus} acf={acf} posts={posts} brokers={brokers} />
         <Routes>
           <Route path="/" element={<Home posts={posts} brokers={brokers} handleOpen={handleOpen} handleClose={handleClose} openBroker={openBroker} acf={acf} />} />
-          <Route path="/brokers" element={<Brokers brokers={brokers} acf={acf} />} />
-          <Route path="/brokers/:slug" element={<SingleBroker brokers={brokers} handleOpen={handleOpen} handleClose={handleClose} openBroker={openBroker} categories={categories} acf={acf}  />} />
-          <Route path="/blogs" element={<Blogs posts={posts} acf={acf} />} />
-          <Route path="/blogs/:slug" element={<SinglePost posts={posts} brokers={brokers} handleOpen={handleOpen} handleClose={handleClose} openBroker={openBroker} categories={categories} acf={acf} />}  />
+          <Route path={`/${menus[1]?.title.toLowerCase().replace(/\s+/g, '-')}`}  element={<Brokers brokers={brokers} acf={acf} />} />
+          <Route path={`/${menus[1]?.title.toLowerCase().replace(/\s+/g, '-')}/:slug`} element={<SingleBroker brokers={brokers} handleOpen={handleOpen} handleClose={handleClose} openBroker={openBroker} categories={categories} acf={acf}  />} />
+          <Route path={`/${menus[2]?.title.toLowerCase().replace(/\s+/g, '-')}`} element={<Blogs posts={posts} acf={acf} />} />
+          <Route path={`/${menus[2]?.title.toLowerCase().replace(/\s+/g, '-')}/:slug`} element={<SinglePost posts={posts} brokers={brokers} handleOpen={handleOpen} handleClose={handleClose} openBroker={openBroker} categories={categories} acf={acf} />}  />
+          <Route path={`/${menus[3]?.title.toLowerCase().replace(/\s+/g, '-')}`}  element={<Blog2 acf={acf}  />} />
           <Route path="/search" element={<SearchResult posts={posts} brokers={brokers} />} />
         </Routes>
         

@@ -132,6 +132,15 @@ const theme = createTheme({
 
       },
     },
+     MuiOutlinedInput: {
+      styleOverrides: {
+        notchedOutline: {
+          borderColor: '#1CC2E7',
+          borderWidth: '2px',
+          borderRadius:'8px'
+        },
+      },
+    },
   },
 });
 

@@ -59,7 +59,7 @@ const Hero = ({ acf }) => {
           animate={{ opacity: 1 }}
           transition={{ duration: 1.5 }}
         >
-          <Box component="img" src="https://comparebestbrokers.com/cbb_wp/wp-content/uploads/2025/08/global-trading.png" alt="" sx={{ display: { xs: 'none', sm: 'block' }, width: { xs: '350px', sm: '500px' }, position: "absolute", zIndex: '0', right: '0', top: '50%', transform: 'translateY(-50%)', filter: { xs: 'brightness(40%)', md: 'brightness(100%)' } }} />
+          <Box component="img" src={acf.home.heroImage} alt="" sx={{ display: { xs: 'none', sm: 'block' }, width: { xs: '350px', sm: '500px' }, position: "absolute", zIndex: '0', right: '0', top: '50%', transform: 'translateY(-50%)', filter: { xs: 'brightness(40%)', md: 'brightness(100%)' } }} />
         </motion.div>
       </Container >
     </BannerMainBox >
