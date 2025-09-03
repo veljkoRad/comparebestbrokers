@@ -17,17 +17,17 @@ export const SingleBoxContainer = styled(Box)(({ theme }) => ({
     gap: '24px'
 }));
 
-export const SinglePostCard = styled(Card)(({ theme }) => ({
-    position: "relative",
-    display: "flex",
-    justifyContent: "center",
-    maxWidth: "1024px",
+export const SinglePostImage = styled(Box)(({ theme }) => ({
+    maxWidth: "731px",
+    width: "100%",
+    borderRadius: "16px",
+    objectFit: "cover",
     marginTop: '50px',
-    height: "400px",
+    height: '330px',
     [theme.breakpoints.down("sm")]: {
-        maxWidth: "1000px",
         height: '180px'
     },
+
 }));
 
 export const HtmlWrapper = styled(Typography)(({ theme }) => ({

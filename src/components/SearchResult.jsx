@@ -21,8 +21,8 @@ const SearchResult = ({ posts, brokers }) => {
 
     // Combine posts and brokers with type
     const combined = [
-        ...posts.map(post => ({ ...post, type: 'blog' })),
-        ...brokers.map(broker => ({ ...broker, type: 'broker' }))
+        ...brokers.map(broker => ({ ...broker, type: 'broker' })),
+        ...posts.map(post => ({ ...post, type: 'blog' }))
     ];
 
 
@@ -61,7 +61,7 @@ const SearchResult = ({ posts, brokers }) => {
                 <Typography color='secondary' variant='h1' >Search results</Typography>
                 <Typography>"{query}"</Typography>
                 <Box
-                    style={{ borderBottom: "1px solid #222F43", marginTop: '30px', marginBottom: '70px', width: '100%' }}
+                    style={{ borderBottom: "1px solid #222F43", marginTop: '30px', marginBottom: '30px', width: '100%' }}
                 />
                 {currentPosts.map((item, index) => {
                     return (

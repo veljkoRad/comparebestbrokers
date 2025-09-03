@@ -46,8 +46,8 @@ const Navbar = ({ menus, acf, posts, brokers }) => {
         inputValue={inputValue}
         onInputChange={(_, v) => setInputValue(v)}
         options={Array.isArray(posts) && Array.isArray(brokers) ? [
-          ...posts.map(post => ({ ...post, type: 'post' })),
           ...brokers.map(broker => ({ ...broker, type: 'broker' })),
+          ...posts.map(post => ({ ...post, type: 'post' }))
         ] : []}
         onChange={(event, newValue) => {
           if (!newValue) return;

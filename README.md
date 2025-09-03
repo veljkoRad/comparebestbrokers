@@ -1,41 +1,30 @@
 # Compare Best Brokers
 
-## Overview
-This is a full-stack web application built to compare and display broker information in a clear and user-friendly way.  
-It connects a **React frontend** with a **.NET Web API backend**, making it both functional and scalable.  
-The goal is to provide users with quick insights, while also showcasing my ability to build and structure a complete project.
+## Goal
+The goal of this project is to build a **responsive and visually appealing web application** that connects to a **WordPress REST API**.  
+All content (posts, images, brokers, ACF fields) is managed in WordPress, so the admin can easily update data without touching the code.  
+This way, the frontend always stays up to date, while the backend is simple to manage.
 
 ## Tech Stack
 - **Frontend**: React (Create React App)  
-- **Styling**: CSS  
-- **Backend**: .NET Web API  
-- **Database**: SQL Server / MySQL  
-- **Other**: Custom services, hooks, and utilities for clean project structure  
+- **Styling**: Material UI, CSS  
+- **Backend / API**: WordPress REST API (custom posts, ACF, media)  
+- **Other**: services, hooks, and components for clean project structure
+- **Libraries used**:  
+  - **Framer Motion** → animations and smooth transitions  
+  - **React Router** → routing between pages  
+  - **Axios** → API requests  
+  - **React Google ReCAPTCHA v3** → spam protection for forms    
 
 ## How it works
-1. User interacts with the React frontend.  
-2. Frontend sends requests to the backend API.  
-3. Backend (built with .NET) applies business logic and queries the database.  
-4. Data is sent back and displayed in the UI.  
+1. React frontend handles user interactions.  
+2. Data (brokers, posts, images, custom fields) is fetched from the WordPress REST API.  
+3. The app organizes and displays this data with Material UI components and custom CSS.
+4. Forms are integrated with **Google Sheets** (to save submissions) and also send a **thank-you email** to the user.  
+5. Responsive design ensures it works across desktop and mobile.  
 
 ## Project Structure
-- **/assets** → images, icons, static files  
-- **/services** → API requests  
-- **/store** → state management  
-- **/utils** → helper functions  
+- **/services** → API requests (WordPress endpoints)  
 - **/components** → reusable UI blocks  
 - **/pages** → main app pages  
-
-## Purpose
-The app was built to be **practical and usable**, not just a demo.  
-It demonstrates:  
-- A working connection between React and .NET Web API  
-- Clean, modular code organization  
-- A responsive and user-focused design  
-- My ability to deliver a real-world portfolio project  
-
-## Getting Started
-Frontend:
-```bash
-npm install
-npm start
+- **styles** → styled materialUI components
