@@ -7,6 +7,9 @@ import { BrokersButtonAccount, BrokersButtonLearn, BrokersCardBox, BrokersContai
 const Brokers = ({ brokers, acf }) => {
   return (
     <>
+      <title>Brokers | Compare Best Brokers</title>
+      <meta name="description" content="Find top brokers." />
+      <meta name="keywords" content="brokers, trading, news, stocks, forex" />
       <Container sx={{ paddingTop: '60px' }}>
         <motion.div
           initial={{ opacity: 0 }}

@@ -25,10 +25,21 @@ const SinglePost = ({ posts, brokers, handleOpen, handleClose, openBroker, categ
 
   if (!single) return <p>Loading...</p>;
 
+  const stripHtml = (html) => {
+    if (!html) return "";
+    const div = document.createElement("div");
+    div.innerHTML = html;
+    return div.textContent || div.innerText || "";
+  };
+  const description = stripHtml(single.content).slice(0, 160);
 
+  const singleTitle = `${single.title} | Compare Best Brokers`;
 
   return (
     <>
+      <title>{singleTitle}</title>
+      <meta name="description" content={description} />
+      <meta name="keywords" content="brokers, trading, news, stocks, forex" />
       <Box>
         <Container
           maxWidth="lg"

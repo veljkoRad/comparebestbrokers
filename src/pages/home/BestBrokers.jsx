@@ -37,7 +37,7 @@ const BestBrokers = ({ brokers, handleOpen, handleClose, openBroker, acf }) => {
           <img
             src={acf.home.banner2Image}
             alt="banner"
-            style={{ display: "block", margin: "0 auto 70px", width: '100%' }}
+            style={{ display: "block", margin: "0 auto 70px", width: '100%', maxWidth: '1111px' }}
           />
         </Link>
       )}
@@ -94,7 +94,7 @@ const BestBrokers = ({ brokers, handleOpen, handleClose, openBroker, acf }) => {
           <img
             src={acf.home.banner3Image}
             alt="banner"
-            style={{ display: "block", margin: "70px auto", width: '100%' }}
+            style={{ display: "block", margin: "70px auto 0", width: '100%', maxWidth: '1111px' }}
           />
         </Link>
       )}

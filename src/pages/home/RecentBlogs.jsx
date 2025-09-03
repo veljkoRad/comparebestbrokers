@@ -33,7 +33,7 @@ const RecentBlogs = ({ posts, acf }) => {
               <img
                 src={acf.home.bannerImage}
                 alt="banner"
-                style={{ display: "block", margin: "0 auto 70px", width:'100%' }}
+                style={{ display: "block", margin: "0 auto 70px", width: '100%', maxWidth: '1111px' }}
               />
             </Link>
           )}
@@ -56,7 +56,7 @@ const RecentBlogs = ({ posts, acf }) => {
                 <article>
                   <RecentBlogsLink
                     component={RouterLink}
-                    to={`/blogs/${item.slug}`}
+                    to={`/news/${item.slug}`}
 
                   >
                     <RecentBlogsCard>

@@ -4,12 +4,10 @@ import { BrowserRouter } from "react-router-dom";
 import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 import "./index.css";
 import App from "./App";
-
 import "@fontsource/noto-sans/400.css";
 import "@fontsource/noto-sans/500.css";
 import "@fontsource/noto-sans/700.css";
 import "@fontsource/noto-sans/800.css";
-import { color } from "framer-motion";
 
 const theme = createTheme({
   spacing: 4,
@@ -139,19 +137,36 @@ const theme = createTheme({
           borderWidth: '2px',
           borderRadius:'8px'
         },
+                root: {
+   
+          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+            // The actual border when focused
+            borderColor: "#1CC2E7",
+            borderWidth: "2px",
+          },
+        },
       },
     },
+        MuiInputLabel: {
+      styleOverrides: {
+        root: {
+          "&.Mui-focused": {
+            color: "#1CC2E7", // change this to your desired color
+          },
+        },
+      },
+    }
   },
 });
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </ThemeProvider>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </ThemeProvider>
   </React.StrictMode>
 );

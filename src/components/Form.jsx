@@ -1,7 +1,19 @@
-import React, { useState } from "react";
-import { Box, TextField, Button, Checkbox, FormControlLabel, Typography } from "@mui/material";
+import { useState } from "react";
+import {
+    Box,
+    TextField,
+    Button,
+    Checkbox,
+    FormControlLabel,
+    Typography,
+    CircularProgress,
+} from "@mui/material";
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 
 const ContactForm = () => {
+
+    const { executeRecaptcha } = useGoogleReCaptcha();
+
     const [formData, setFormData] = useState({
         firstName: "",
         lastName: "",
@@ -12,6 +24,7 @@ const ContactForm = () => {
 
     const [errors, setErrors] = useState({});
     const [success, setSuccess] = useState(false);
+    const [loading, setLoading] = useState(false); // NEW: loading state
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -26,7 +39,13 @@ const ContactForm = () => {
         if (!formData.firstName) newErrors.firstName = "First name is required";
         if (!formData.lastName) newErrors.lastName = "Last name is required";
         if (!formData.email) newErrors.email = "Email is required";
-        if (!formData.phone) newErrors.phone = "Phone is required";
+
+        if (!formData.phone) {
+            newErrors.phone = "Phone is required";
+        } else if (!/^[0-9]+$/.test(formData.phone)) {
+            newErrors.phone = "Phone must contain numbers only";
+        }
+
         if (!formData.accepted) newErrors.accepted = "You must accept the terms";
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
@@ -36,17 +55,32 @@ const ContactForm = () => {
         e.preventDefault();
         if (!validate()) return;
 
-        try {
-            const response = await fetch(
-                "https://script.google.com/macros/s/AKfycbweMds3h1bmuCxw1vjDeAo8IYGsBt_fu8HUEtWob0QHZtv1ZQriJi5BHr0LcLtltrR7HQ/exec",
+        if (!executeRecaptcha) {
+            console.log("Recaptcha not yet available");
+            return;
+        }
 
+        setLoading(true); // show spinner
+        setSuccess(false);
+
+        try {
+
+            const recaptchaToken = await executeRecaptcha('submit_form');
+
+            const dataToSend = {
+                ...formData,
+                recaptchaToken,
+            };
+
+            await fetch(
+                "https://script.google.com/macros/s/AKfycbxaBs_X-vJ7FVCACEpsDx2JT0F84NEsOKXov25BG9mZCUFHMCYtV7YyjNQeWTgSvftYag/exec",
                 {
                     method: "POST",
                     mode: "no-cors",
                     headers: {
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify(formData),
+                    body: JSON.stringify(dataToSend),
                 }
             );
 
@@ -58,12 +92,22 @@ const ContactForm = () => {
                 phone: "",
                 accepted: false,
             });
+
+            await fetch("https://comparebestbrokers.com/cbb_wp/wp-json/cbb/v1/thankyou", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(dataToSend),
+            });
         } catch (err) {
             console.error("Error sending data to Google Sheets", err);
+        } finally {
+            setLoading(false); // hide spinner
         }
     };
 
     return (
+
+
         <Box
             component="form"
             onSubmit={handleSubmit}
@@ -71,8 +115,12 @@ const ContactForm = () => {
                 display: "flex",
                 flexDirection: "column",
                 gap: "15px",
-                width: "100%",
-                maxWidth: { xs: "730px", md: "357px" },
+                minWidth: { xs: "100%", sm: "357px" },
+                maxWidth: "357px",
+                position: 'sticky',
+                top: 15,
+                background: (theme) => theme.palette.primary.main,
+                paddingY: '15px'
             }}
         >
             <TextField
@@ -130,22 +178,43 @@ const ContactForm = () => {
             />
             {errors.accepted && <Typography color="error">{errors.accepted}</Typography>}
 
-            <Button
-                type="submit"
-                variant="contained"
-                sx={{
-                    background:
-                        "linear-gradient(90deg, rgb(14, 165, 234), rgb(11, 209, 209) 51%, rgb(14, 165, 234)) var(--x, 0)/200%",
-                    color: "#fff",
-                    fontWeight: "800",
-                    fontSize: "18px",
-                    height: "56px",
-                }}
-            >
-                Continue
-            </Button>
+            {/* Button with loading spinner overlay */}
+            <Box sx={{ position: "relative", display: "inline-flex" }}>
+                <Button
+                    type="submit"
+                    variant="contained"
+                    disabled={loading} // disable while loading
+                    sx={{
+                        background:
+                            "linear-gradient(90deg, rgb(14, 165, 234), rgb(11, 209, 209) 51%, rgb(14, 165, 234)) var(--x, 0)/200%",
+                        color: "#fff",
+                        fontWeight: "800",
+                        fontSize: "18px",
+                        height: "56px",
+                        width: "100%",
+                    }}
+                >
+                    {loading ? "Submitting..." : "Continue"}
+                </Button>
+                {loading && (
+                    <CircularProgress
+                        color="secondary"
+                        size={60}
+                        thickness={5}
+                        sx={{
+                            position: "absolute",
+                            top: "50%",
+                            left: "50%",
+                            marginTop: "-30px",
+                            marginLeft: "-30px",
+                        }}
+                    />
+                )}
+            </Box>
 
-            {success && <Typography color="green">Form submitted successfully!</Typography>}
+            {success && (
+                <Typography color="green">Form submitted successfully!</Typography>
+            )}
         </Box>
     );
 };

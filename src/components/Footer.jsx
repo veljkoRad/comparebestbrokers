@@ -25,18 +25,25 @@ const Footer = ({ menus, acf }) => {
                     </Box>
                     <Typography variant='button' color='text' textAlign='center' dangerouslySetInnerHTML={{ __html: acf.footer.risk }} />
                     <Box sx={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
-                        <Link component={RouterLink} target='_blank' to={acf.footer.facebook}>
-                            <FooterIcon><FacebookIcon />Facebook</FooterIcon>
-                        </Link>
-                        <Link component={RouterLink} target='_blank' to={acf.footer.linkedin}>
-                            <FooterIcon><LinkedInIcon />LinkedIn</FooterIcon>
-                        </Link>
-                        <Link component={RouterLink} target='_blank' to={acf.footer.instagram}>
-                            <FooterIcon><InstagramIcon />Instagram</FooterIcon>
-                        </Link>
+                        {acf.footer.facebook && (
+                            <Link component={RouterLink} target='_blank' to={acf.footer.facebook}>
+                                <FooterIcon><FacebookIcon />Facebook</FooterIcon>
+                            </Link>
+                        )}
 
+                        {acf.footer.linkedin && (
+                            <Link component={RouterLink} target='_blank' to={acf.footer.linkedin}>
+                                <FooterIcon><LinkedInIcon />LinkedIn</FooterIcon>
+                            </Link>
+                        )}
+
+                        {acf.footer.instagram && (
+                            <Link component={RouterLink} target='_blank' to={acf.footer.instagram}>
+                                <FooterIcon><InstagramIcon />Instagram</FooterIcon>
+                            </Link>
+                        )}
                     </Box>
-                    <Typography variant='button'>{acf.footer.copyright}</Typography>
+                    <Typography variant='button'>{acf.footer.copyright} {new Date().getFullYear()}.</Typography>
                 </Box>
 
 

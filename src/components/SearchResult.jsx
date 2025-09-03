@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from "framer-motion";
 import { useLocation, Link as RouterLink } from 'react-router-dom';
 import { Box, Container, Link, Pagination, Rating, Typography } from "@mui/material";
@@ -16,6 +16,7 @@ const SearchResult = ({ posts, brokers }) => {
 
     const handleChangePage = (event, value) => {
         setCurrentPage(value);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     // Combine posts and brokers with type
@@ -38,6 +39,13 @@ const SearchResult = ({ posts, brokers }) => {
         return false;
     });
 
+    const totalPages = Math.max(1, Math.ceil(results.length / postsPerPage));
+
+    // ✅ NEW: reset to page 1 when query changes
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [query]);
+
     const currentPosts = results.slice(indexOfFirstPost, indexOfLastPost);
 
     if (!results.length) return <p>No results found for "{query}"</p>;
@@ -59,16 +67,16 @@ const SearchResult = ({ posts, brokers }) => {
                     return (
                         item.type === 'blog' ? (
                             // Blog
-                            <Box key={index} sx={{ display: 'flex', gap: '20px', paddingBottom: '30px', borderBottom: "1px solid #222F43", marginTop: '30px', maxWidth: '731px', width: '100%' }}>
-                                <img
+                            <Box key={index} sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: '20px', paddingBottom: '30px', borderBottom: "1px solid #222F43", marginTop: '30px', maxWidth: '731px', width: '100%' }}>
+                                <Box component="img"
                                     src={item.type === 'blog' ? item.imageLarge : item.logo}
                                     alt={item.type === 'blog' ? item.title : item.name}
-                                    style={{ width: '170px', maxHeight: "120px", display: 'block', }}
+                                    sx={{ width: { xs: '100%', sm: '170px' }, maxHeight: { xs: 'auto', sm: '120px' }, display: 'block', marginTop: '5px' }}
                                 />
-                                <Link component={RouterLink} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+                                <Link component={RouterLink} sx={{ display: 'flex', flexDirection: 'column' }}
                                     to={
                                         item.type === 'blog'
-                                            ? `/blogs/${item.slug}`
+                                            ? `/news/${item.slug}`
                                             : `/brokers/${item.slug}`
                                     }
                                 >
@@ -99,7 +107,7 @@ const SearchResult = ({ posts, brokers }) => {
                                 <Link component={RouterLink} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '15px' }}
                                     to={
                                         item.type === 'blog'
-                                            ? `/blogs/${item.slug}`
+                                            ? `/news/${item.slug}`
                                             : `/brokers/${item.slug}`
                                     }
                                 >
@@ -126,16 +134,21 @@ const SearchResult = ({ posts, brokers }) => {
 
                     )
                 })}
-                <Pagination
-                    count={Math.ceil(posts.length / postsPerPage)}
-                    page={currentPage}
-                    onChange={handleChangePage}
-                    variant="outlined"
-                    size="large"
-                    sx={{
-                        marginTop: '30px',
-                    }}
-                />
+                {
+                    totalPages > 1 && (
+                        <Pagination
+                            count={totalPages}
+                            page={currentPage}
+                            onChange={handleChangePage}
+                            variant="outlined"
+                            size="large"
+                            sx={{
+                                marginTop: '30px',
+                            }}
+                        />
+                    )
+                }
+
 
             </Container>
         </motion.div>

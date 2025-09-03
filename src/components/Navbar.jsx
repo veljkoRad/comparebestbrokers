@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
   Autocomplete,
@@ -26,6 +26,15 @@ import CloseIcon from "@mui/icons-material/Close";
 
 const Navbar = ({ menus, acf, posts, brokers }) => {
 
+  const [inputValue, setInputValue] = useState("");
+
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    setInputValue("");
+  }, [location.pathname, location.search]);
+
 
   const autoComplete = (
     <Box sx={{ width: 145 }}>
@@ -33,6 +42,9 @@ const Navbar = ({ menus, acf, posts, brokers }) => {
         disablePortal
         freeSolo
         openOnFocus
+        clearOnEscape
+        inputValue={inputValue}
+        onInputChange={(_, v) => setInputValue(v)}
         options={Array.isArray(posts) && Array.isArray(brokers) ? [
           ...posts.map(post => ({ ...post, type: 'post' })),
           ...brokers.map(broker => ({ ...broker, type: 'broker' })),
@@ -43,12 +55,18 @@ const Navbar = ({ menus, acf, posts, brokers }) => {
           if (typeof newValue === "object") {
             // Navigate based on type
             if (newValue.type === "post" && newValue.slug) {
-              navigate(`/blogs/${newValue.slug}`);
+              navigate(`/news/${newValue.slug}`);
+              setInputValue("");
+              document.activeElement?.blur();
             } else if (newValue.type === "broker" && newValue.slug) {
               navigate(`/brokers/${newValue.slug}`);
+              setInputValue("");
+              document.activeElement?.blur();
             }
           } else if (typeof newValue === "string") {
             navigate(`/search?query=${encodeURIComponent(newValue)}`);
+            setInputValue("");
+            document.activeElement?.blur();
           }
         }}
         filterOptions={(options, { inputValue }) =>
@@ -89,6 +107,8 @@ const Navbar = ({ menus, acf, posts, brokers }) => {
                 const input = e.target.value.trim();
                 if (input) {
                   navigate(`/search?query=${encodeURIComponent(input)}`);
+                  setInputValue("");
+                  e.currentTarget.blur();
                 }
               }
             }}
@@ -111,8 +131,7 @@ const Navbar = ({ menus, acf, posts, brokers }) => {
   const [toggleMenu, setToggleMenu] = useState(false);
   const [toggleMenuMobile, setToggleMenuMobile] = useState(false);
   const [hoverToggle, setHoverToggle] = useState(null);
-  const location = useLocation();
-  const navigate = useNavigate();
+
 
   const containerVariants = {
     hidden: { opacity: 0 },

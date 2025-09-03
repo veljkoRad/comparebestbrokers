@@ -1,3 +1,13 @@
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+a, a:focus, a:active,
+button, button:focus, button:active {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none; /* optional: disable long press menu */
+}
+
 strong {
     color: #b9e0f2;
 }

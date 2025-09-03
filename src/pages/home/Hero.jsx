@@ -49,9 +49,11 @@ const Hero = ({ acf }) => {
           >
             <Typography variant="body1" color="text" dangerouslySetInnerHTML={{ __html: acf.home.heroSubtitle }}>
             </Typography>
-            <Link component={RouterLink} to={acf.home.heroButtonLink}>
-              <BannerButton variant="contained" ><Typography variant="buttonMain" sx={{ color: (theme) => theme.palette.text.white }}>{acf.home.heroButtonText}</Typography></BannerButton>
-            </Link>
+            {acf.home.heroButtonLink && acf.home.heroButtonText && (
+              <Link component={RouterLink} to={acf.home.heroButtonLink}>
+                <BannerButton variant="contained" ><Typography variant="buttonMain" sx={{ color: (theme) => theme.palette.text.white }}>{acf.home.heroButtonText}</Typography></BannerButton>
+              </Link>
+            )}
           </motion.div>
         </BannerTextBox>
         <motion.div
