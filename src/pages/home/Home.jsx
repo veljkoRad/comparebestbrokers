@@ -5,10 +5,6 @@ import RecentBlogs from "./RecentBlogs";
 import BestBrokers from "./BestBrokers";
 
 const Home = ({ posts, brokers, handleOpen, handleClose, openBroker, acf }) => {
-
-  useEffect(() => {
-    console.log("Helmet title should now be:", document.title);
-  }, []);
   return (
     <Box component="main">
       <title>Home | Compare Best Brokers</title>

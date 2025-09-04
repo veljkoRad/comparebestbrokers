@@ -13,7 +13,9 @@ const getOptions = () => api.get("/acf/v2/options").then(r => r.data);
 
 // Mappers
 
-const mapPosts = posts => posts.map(post => ({
+const mapPosts = posts => posts.map(post => {
+   const tags = post._embedded?.["wp:term"]?.[1]?.map(tag => tag.name) || [];
+  return {
   id: post.id,
   title: post.title?.rendered ?? "",
   content: post.content?.rendered ?? "",
@@ -23,7 +25,9 @@ const mapPosts = posts => posts.map(post => ({
   slug: post.slug,
   categoryName: post._embedded?.["wp:term"]?.[0]?.[0]?.name || "Uncategorized",
   date: (post.date || "").slice(0, 10),
-}));
+  author: post._embedded?.author?.[0]?.name || "Admin",
+  tags: tags.length > 0 ? tags : ["News"],
+}});
 
 const mapMenus = items => items.map(i => ({
   id: i.ID,

@@ -126,7 +126,7 @@ const Navbar = ({ menus, acf, posts, brokers }) => {
               color: "white",
               fontSize: "10px",
               "&:hover": {
-                backgroundColor: "#444C66", // when mouse is over
+                backgroundColor: "#444C66",
                 color: "#1CC2E7",
               },
             },

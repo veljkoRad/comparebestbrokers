@@ -95,7 +95,6 @@ export const RecentBlogsLink = styled(Link)(({ theme }) => ({
     marginTop: "30px",
     "&:hover .hoverText": {
         color: "#1CC2E7",
-        transform: "translateY(-4px)",
         transition: "all 0.3s ease 0s",
     },
     "&:hover .hoverImage": {
@@ -104,9 +103,13 @@ export const RecentBlogsLink = styled(Link)(({ theme }) => ({
     },
     "&:hover .hoverDate": {
         color: "#94A9C9",
-        transform: "translateY(-4px)",
         transition: "all 0.3s ease 0s",
     },
+    "&:hover .hoverCard": {
+        transform: 'translateY(-2px)',
+        transition: "all 0.3s ease 0s"
+    },
+
 }))
 
 export const RecentBlogsCard = styled(Card)(({ theme }) => ({
@@ -122,7 +125,7 @@ export const RecentBlogsCard = styled(Card)(({ theme }) => ({
     display: "flex",
     flexDirection: "column",
     justifyContent: "flex-end",
-    padding: "30px 15px",
+    padding: "30px 15px 15px",
     overflow: "hidden",
 }))
 

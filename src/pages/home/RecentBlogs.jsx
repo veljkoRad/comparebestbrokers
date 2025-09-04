@@ -1,4 +1,4 @@
-import { Box, Card, Container, Link, Typography } from "@mui/material";
+import { Avatar, Box, Card, Container, Link, Stack, Typography } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 import TextGradient from "../../components/TextGradient";
 import { motion } from "framer-motion";
@@ -63,7 +63,7 @@ const RecentBlogs = ({ posts, acf }) => {
                       to={`/news/${item.slug}`}
 
                     >
-                      <RecentBlogsCard>
+                      <RecentBlogsCard className="hoverCard" sx={{ transition: "all 0.3s ease 0s" }}>
                         <Box
                           component='img'
                           src={item.imageLarge}
@@ -78,21 +78,18 @@ const RecentBlogs = ({ posts, acf }) => {
                             objectFit: "cover",
                             objectPosition: "center",
                             transition: "transform 0.3s ease",
+                            // filter: 'brightness(40%)'
                           }}
                         />
-                        <img
-                          src="/images/bg-trans.png"
-                          alt="transparent darker"
-                          style={{
+                        <Box
+                          sx={{
                             position: "absolute",
-                            top: 0,
-                            left: 0,
-                            width: "100%",
-                            height: "100%",
+                            inset: 0,
                             pointerEvents: "none",
                             zIndex: 2,
+                            background: "linear-gradient(to top, rgba(0,0,0,0.55) 20%, rgba(0,0,0,0) 70%)"
                           }}
-                        ></img>
+                        />
                         <Typography
                           className="hoverText"
                           variant="h3"
@@ -105,19 +102,36 @@ const RecentBlogs = ({ posts, acf }) => {
                         >
                           {item.title}
                         </Typography>
-                        <Typography
-                          className="hoverDate"
-                          variant="button"
-                          sx={{
-                            transition: "all 0.3s ease 0s",
-                            position: "relative",
-                            zIndex: 3,
-                            color: "#66768F",
-                            marginLeft: "auto",
-                          }}
-                        >
-                          {item.date}
-                        </Typography>
+                        <Stack direction='row' alignItems='center' justifyContent='space-between' sx={{ marginTop: '15px' }}>
+                          <Stack direction='row' alignItems='center' gap='5px'>
+                            <Avatar className="hoverImage" sx={{ background: (theme) => theme.palette.text.gray, width: '32px', height: '32px', transition: "all 0.3s ease 0s" }} />
+                            <Typography
+                              className="hoverText"
+                              color="text"
+                              sx={{
+                                transition: "all 0.3s ease 0s",
+                                position: "relative",
+                                zIndex: 3,
+                                textTransform: 'capitalize',
+                                fontWeight: 700
+                              }}>
+                              {item.author}
+                            </Typography>
+                          </Stack>
+
+                          <Typography
+                            className="hoverDate"
+                            variant="button"
+                            sx={{
+                              transition: "all 0.3s ease 0s",
+                              position: "relative",
+                              zIndex: 3,
+                              color: "#66768F",
+                            }}
+                          >
+                            {item.date}
+                          </Typography>
+                        </Stack>
                       </RecentBlogsCard>
                     </RecentBlogsLink>
                   </article>

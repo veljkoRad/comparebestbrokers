@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { Box, Container, Link, Pagination, Typography } from "@mui/material";
+import { Box, Container, Link, Pagination, Stack, Typography } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 import TextGradient from "../components/TextGradient";
 import { BlogLink } from "../styles/blogsStyled";
@@ -91,7 +91,14 @@ const Blogs = ({ posts, acf }) => {
                           filter: 'brightness(80%)'
                         }}
                       />
-                      <Typography color="text.gray">#{item.categoryName}</Typography>
+                      <Stack direction='row' gap='7px' flexWrap='wrap'>
+                        {item.tags.map((tag, i) => (
+                          <Typography key={i} color="text.gray">
+                            #{tag}
+                          </Typography>
+                        ))}
+                      </Stack>
+
                       <Typography variant="h3" className="hoverTitle">{shortTitle}</Typography>
                       <Typography dangerouslySetInnerHTML={{ __html: shortContent }} />
                       <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>

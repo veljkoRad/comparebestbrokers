@@ -44,7 +44,7 @@ function App() {
 
   const handleOpen = (broker) => setOpenBroker(broker);
   const handleClose = () => setOpenBroker(null);
-
+console.log(posts);
 return (
   <>
     {loading ? (
