@@ -25,6 +25,12 @@ const Blogs = ({ posts, acf }) => {
     ...currentPosts.slice(4)
   ];
 
+  const itemVariants = {
+    hidden: { opacity: 0, y: 5 },
+    visible: { opacity: 1, y: 0 },
+  };
+
+
   return (
     <>
       <title>News | Compare Best Brokers</title>
@@ -41,7 +47,12 @@ const Blogs = ({ posts, acf }) => {
           <Box
             style={{ borderBottom: "1px solid #222F43", marginTop: '20px', marginBottom: "50px", }}
           />
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '24px', justifyContent: 'center' }}>
+          <Box component={motion.div} sx={{ display: 'flex', flexWrap: 'wrap', gap: '24px', justifyContent: 'center' }} initial="hidden"
+            initial="hidden"
+            animate="visible"
+            variants={{
+              visible: { transition: { staggerChildren: 0.15 } },
+            }}>
             {
               blogsWithBanner.map((item, index) => {
 
@@ -65,29 +76,31 @@ const Blogs = ({ posts, acf }) => {
 
 
                 return (
-                  <BlogLink component={RouterLink} to={`/news/${item.slug}`} key={index} >
-                    <Box
-                      component="img"
-                      src={item.imageLarge}
-                      alt={item.title}
-                      sx={{
-                        width: { xs: '275px', sm: '300px', md: '400px', xl: '500px' },
-                        height: { xs: '155px', sm: '169px', md: '226px', xl: '282px' },
-                        objectFit: "cover",
-                        objectPosition: "center",
-                        borderRadius: '16px',
-                        filter: 'brightness(80%)'
-                      }}
-                    />
-                    <Typography color="text.gray">#{item.categoryName}</Typography>
-                    <Typography variant="h3" className="hoverTitle">{shortTitle}</Typography>
-                    <Typography dangerouslySetInnerHTML={{ __html: shortContent }} />
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <Typography color="text.gray" variant="button">{item.date}</Typography>
-                      <Typography sx={{ marginLeft: 'auto', '&:hover': { color: (theme) => theme.palette.text.secondary, transition: "all 0.3s ease 0s", } }}>Read More</Typography>
-                    </Box>
+                  <motion.div key={index} variants={itemVariants}>
+                    <BlogLink component={RouterLink} to={`/news/${item.slug}`} key={index} >
+                      <Box
+                        component="img"
+                        src={item.imageLarge}
+                        alt={item.title}
+                        sx={{
+                          width: { xs: '275px', sm: '300px', md: '400px', xl: '500px' },
+                          height: { xs: '155px', sm: '169px', md: '226px', xl: '282px' },
+                          objectFit: "cover",
+                          objectPosition: "center",
+                          borderRadius: '16px',
+                          filter: 'brightness(80%)'
+                        }}
+                      />
+                      <Typography color="text.gray">#{item.categoryName}</Typography>
+                      <Typography variant="h3" className="hoverTitle">{shortTitle}</Typography>
+                      <Typography dangerouslySetInnerHTML={{ __html: shortContent }} />
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <Typography color="text.gray" variant="button">{item.date}</Typography>
+                        <Typography sx={{ marginLeft: 'auto', '&:hover': { color: (theme) => theme.palette.text.secondary, transition: "all 0.3s ease 0s", } }}>Read More</Typography>
+                      </Box>
 
-                  </BlogLink>
+                    </BlogLink>
+                  </motion.div>
                 )
 
               })

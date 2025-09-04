@@ -26,7 +26,7 @@ const RecentBlogs = ({ posts, acf }) => {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 1 }}
+          transition={{ duration: 1.2 }}
         >
           {acf.home.bannerImage && acf.home.bannerLink && (
             <Link component={RouterLink} to={acf.home.bannerLink} target="_blank">
@@ -42,85 +42,90 @@ const RecentBlogs = ({ posts, acf }) => {
           <Typography variant="h3" color="text" sx={{ marginTop: "10px" }}>
             {acf.home.homeBlogsSubtitle}
           </Typography>
+
+
+          <RecentBlogsBox
+            component={motion.div}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.3 }}
+            variants={{
+              visible: { transition: { staggerChildren: 0.15 } },
+            }}
+          >
+
+            {posts.slice(0, 6).map((item, index) => {
+              return (
+                <motion.div key={index} variants={itemVariants}>
+                  <article>
+                    <RecentBlogsLink
+                      component={RouterLink}
+                      to={`/news/${item.slug}`}
+
+                    >
+                      <RecentBlogsCard>
+                        <Box
+                          component='img'
+                          src={item.imageLarge}
+                          alt={item.title}
+                          className="hoverImage"
+                          sx={{
+                            position: "absolute",
+                            top: 0,
+                            left: 0,
+                            width: { xs: '300px', md: '354px' },
+                            height: { xs: '352px', md: '415px' },
+                            objectFit: "cover",
+                            objectPosition: "center",
+                            transition: "transform 0.3s ease",
+                          }}
+                        />
+                        <img
+                          src="/images/bg-trans.png"
+                          alt="transparent darker"
+                          style={{
+                            position: "absolute",
+                            top: 0,
+                            left: 0,
+                            width: "100%",
+                            height: "100%",
+                            pointerEvents: "none",
+                            zIndex: 2,
+                          }}
+                        ></img>
+                        <Typography
+                          className="hoverText"
+                          variant="h3"
+                          sx={{
+                            transition: "all 0.3s ease 0s",
+                            position: "relative",
+                            zIndex: 3,
+                            color: (theme) => theme.palette.secondary.main,
+                          }}
+                        >
+                          {item.title}
+                        </Typography>
+                        <Typography
+                          className="hoverDate"
+                          variant="button"
+                          sx={{
+                            transition: "all 0.3s ease 0s",
+                            position: "relative",
+                            zIndex: 3,
+                            color: "#66768F",
+                            marginLeft: "auto",
+                          }}
+                        >
+                          {item.date}
+                        </Typography>
+                      </RecentBlogsCard>
+                    </RecentBlogsLink>
+                  </article>
+                </motion.div>
+              );
+            })}
+          </RecentBlogsBox>
         </motion.div>
-
-        <RecentBlogsBox
-          component={motion.div}
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-        >
-          {posts.slice(0, 6).map((item, index) => {
-            return (
-              <motion.div key={index} variants={itemVariants}>
-                <article>
-                  <RecentBlogsLink
-                    component={RouterLink}
-                    to={`/news/${item.slug}`}
-
-                  >
-                    <RecentBlogsCard>
-                      <Box
-                        component='img'
-                        src={item.imageLarge}
-                        alt={item.title}
-                        className="hoverImage"
-                        sx={{
-                          position: "absolute",
-                          top: 0,
-                          left: 0,
-                          width: { xs: '300px', md: '354px' },
-                          height: { xs: '352px', md: '415px' },
-                          objectFit: "cover",
-                          objectPosition: "center",
-                          transition: "transform 0.3s ease",
-                        }}
-                      />
-                      <img
-                        src="/images/bg-trans.png"
-                        alt="transparent darker"
-                        style={{
-                          position: "absolute",
-                          top: 0,
-                          left: 0,
-                          width: "100%",
-                          height: "100%",
-                          pointerEvents: "none",
-                          zIndex: 2,
-                        }}
-                      ></img>
-                      <Typography
-                        className="hoverText"
-                        variant="h3"
-                        sx={{
-                          transition: "all 0.3s ease 0s",
-                          position: "relative",
-                          zIndex: 3,
-                          color: (theme) => theme.palette.secondary.main,
-                        }}
-                      >
-                        {item.title}
-                      </Typography>
-                      <Typography
-                        className="hoverDate"
-                        variant="button"
-                        sx={{
-                          transition: "all 0.3s ease 0s",
-                          position: "relative",
-                          zIndex: 3,
-                          color: "#66768F",
-                          marginLeft: "auto",
-                        }}
-                      >
-                        {item.date}
-                      </Typography>
-                    </RecentBlogsCard>
-                  </RecentBlogsLink>
-                </article>
-              </motion.div>
-            );
-          })}
-        </RecentBlogsBox>
       </Container>
     </Box>
   );

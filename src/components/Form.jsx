@@ -118,7 +118,7 @@ const ContactForm = () => {
                 minWidth: { xs: "100%", sm: "357px" },
                 maxWidth: "357px",
                 position: 'sticky',
-                top: 15,
+                top: 0,
                 background: (theme) => theme.palette.primary.main,
                 paddingY: '15px'
             }}

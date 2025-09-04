@@ -44,9 +44,9 @@ const BestBrokers = ({ brokers, handleOpen, handleClose, openBroker, acf }) => {
       <motion.div
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, amount: 0.1 }}
+        viewport={{ once: true, amount: 0.3 }}
         variants={{
-          visible: { transition: { staggerChildren: 0.1 } },
+          visible: { transition: { staggerChildren: 0.15 } },
         }}
       >
         <motion.div variants={itemVariants}>

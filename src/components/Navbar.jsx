@@ -45,13 +45,14 @@ const Navbar = ({ menus, acf, posts, brokers }) => {
         clearOnEscape
         inputValue={inputValue}
         onInputChange={(_, v) => setInputValue(v)}
+        // options is for what autosugest will show
         options={Array.isArray(posts) && Array.isArray(brokers) ? [
           ...brokers.map(broker => ({ ...broker, type: 'broker' })),
           ...posts.map(post => ({ ...post, type: 'post' }))
         ] : []}
+        // onChane is what will happen when i click on autosugest or when I enter some keyword that I typed for example "ava"
         onChange={(event, newValue) => {
           if (!newValue) return;
-
           if (typeof newValue === "object") {
             // Navigate based on type
             if (newValue.type === "post" && newValue.slug) {
@@ -69,6 +70,7 @@ const Navbar = ({ menus, acf, posts, brokers }) => {
             document.activeElement?.blur();
           }
         }}
+        // filterOptions define what to search in this case for post search through title and content...
         filterOptions={(options, { inputValue }) =>
           options.filter(option => {
             if (option.type === 'post') {
@@ -83,15 +85,13 @@ const Navbar = ({ menus, acf, posts, brokers }) => {
           })
             .slice(0, 5)
         }
+        // this is what to see in autosugest
         getOptionLabel={option =>
-          typeof option === 'string'
-            ? option
-            : option.type === 'post'
-              ? option.title || ''
-              : option.type === 'broker'
+          typeof option === 'string' ? option : option.type === 'post' ? option.title || '' : option.type === 'broker'
                 ? option.name || ''
                 : ''
         }
+        // Autocomplete doesn’t render its own text field. Instead, you tell it how to render the input by passing a function:
         renderInput={(params) => (
           <TextField
             {...params}

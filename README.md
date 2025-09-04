@@ -20,8 +20,9 @@ This way, the frontend always stays up to date, while the backend is simple to m
 1. React frontend handles user interactions.  
 2. Data (brokers, posts, images, custom fields) is fetched from the WordPress REST API.  
 3. The app organizes and displays this data with Material UI components and custom CSS.
-4. Forms are integrated with **Google Sheets** (to save submissions) and also send a **thank-you email** to the user.  
-5. Responsive design ensures it works across desktop and mobile.  
+4. A **search with autocomplete** feature lets users quickly find brokers or news posts:  
+5. Forms are integrated with **Google Sheets** (to save submissions) and also send a **thank-you email** to the user.  
+6. Responsive design ensures it works across desktop and mobile.  
 
 ## Project Structure
 - **/services** → API requests (WordPress endpoints)  

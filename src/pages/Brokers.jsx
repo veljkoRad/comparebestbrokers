@@ -5,6 +5,11 @@ import TextGradient from "../components/TextGradient";
 import { BrokersButtonAccount, BrokersButtonLearn, BrokersCardBox, BrokersContainerBox, BrokersContainerButton } from "../styles/brokersStyled";
 
 const Brokers = ({ brokers, acf }) => {
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 5 },
+    visible: { opacity: 1, y: 0 },
+  };
   return (
     <>
       <title>Brokers | Compare Best Brokers</title>
@@ -18,10 +23,14 @@ const Brokers = ({ brokers, acf }) => {
         >
           <TextGradient>{acf.brokers.title}</TextGradient>
           <Typography sx={{ marginTop: '20px', maxWidth: '637px' }} dangerouslySetInnerHTML={{ __html: acf.brokers.subtitle }} />
-          <BrokersContainerBox >
+          <BrokersContainerBox component={motion.div} initial="hidden"
+            animate="visible"
+            variants={{
+              visible: { transition: { staggerChildren: 0.15 } },
+            }}>
             {
               brokers.map((item, index) => (
-                <BrokersCardBox key={index} >
+                <BrokersCardBox component={motion.div} key={index} variants={itemVariants} >
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <img
                       style={{
