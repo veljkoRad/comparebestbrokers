@@ -88,8 +88,8 @@ const Navbar = ({ menus, acf, posts, brokers }) => {
         // this is what to see in autosugest
         getOptionLabel={option =>
           typeof option === 'string' ? option : option.type === 'post' ? option.title || '' : option.type === 'broker'
-                ? option.name || ''
-                : ''
+            ? option.name || ''
+            : ''
         }
         // Autocomplete doesn’t render its own text field. Instead, you tell it how to render the input by passing a function:
         renderInput={(params) => (
@@ -112,7 +112,11 @@ const Navbar = ({ menus, acf, posts, brokers }) => {
                 }
               }
             }}
-            sx={{ width: "100%" }}
+            sx={{
+              width: "100%", "& .MuiAutocomplete-clearIndicator": {
+                color: "#1CC2E7",
+              }
+            }}
           />
         )}
         noOptionsText="No results found"
@@ -120,8 +124,13 @@ const Navbar = ({ menus, acf, posts, brokers }) => {
           sx: {
             "& .MuiAutocomplete-option": {
               color: "white",
-              fontSize: "9px",
+              fontSize: "10px",
+              "&:hover": {
+                backgroundColor: "#444C66", // when mouse is over
+                color: "#1CC2E7",
+              },
             },
+
           },
         }}
       />
