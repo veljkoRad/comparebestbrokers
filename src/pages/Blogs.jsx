@@ -16,6 +16,7 @@ const Blogs = ({ posts, acf }) => {
 
   const handleChangePage = (event, value) => {
     setCurrentPage(value);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
 

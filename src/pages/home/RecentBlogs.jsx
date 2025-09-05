@@ -48,7 +48,7 @@ const RecentBlogs = ({ posts, acf }) => {
             component={motion.div}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, amount: 0.3 }}
+            viewport={{ once: true, amount: 0.1 }}
             variants={{
               visible: { transition: { staggerChildren: 0.15 } },
             }}
@@ -87,7 +87,7 @@ const RecentBlogs = ({ posts, acf }) => {
                             inset: 0,
                             pointerEvents: "none",
                             zIndex: 2,
-                            background: "linear-gradient(to top, rgba(0,0,0,0.55) 20%, rgba(0,0,0,0) 70%)"
+                            background: "linear-gradient(to top, rgba(0,0,0,0.55) 35%, rgba(0,0,0,0) 70%)"
                           }}
                         />
                         <Typography

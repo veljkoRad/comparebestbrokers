@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Box, Container, IconButton, Stack, Typography, } from "@mui/material";
+import { Avatar, Box, Container, IconButton, Stack, Typography, } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import TextGradient from "./TextGradient";
@@ -62,6 +62,15 @@ const SinglePost = ({ posts, brokers, handleOpen, handleClose, openBroker, categ
                 <TextGradient variant="h2" sx>
                   {single.title}
                 </TextGradient>
+                <Stack direction='row' gap='10px' alignItems='center' sx={{ marginTop: '30px' }}>
+                  <Avatar sx={{ background: (theme) => theme.palette.text.gray, width: '40px', height: '40px' }} />
+                  <Stack>
+                    <Typography sx={{ textTransform: 'capitalize', fontWeight: 700, color: "#66768F" }}>{single.author}</Typography>
+                    <Typography variant="button" sx={{ color: "#66768F", lineHeight: '14px' }}>{single.date}</Typography>
+                  </Stack>
+
+                </Stack>
+
 
                 <SinglePostImage
                   component='img'
