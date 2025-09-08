@@ -8,8 +8,13 @@ export const BlogLink = styled(Link)(({ theme }) => ({
     borderRadius: '16px',
     border: '1px solid #222F43',
     maxWidth: 'min-content',
+    minHeight: '611px',
+    [theme.breakpoints.down('sm')]: {
+        minHeight: '537px'
+    },
     display: 'flex',
     flexDirection: 'column',
+    justifyContent: 'space-between',
     gap: '20px',
     transition: 'all 0.3s ease 0s',
     '&:hover': {

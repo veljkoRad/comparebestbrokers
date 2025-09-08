@@ -5,15 +5,7 @@ import { motion } from "framer-motion";
 import { RecentBlogsBox, RecentBlogsCard, RecentBlogsLink } from "../../styles/homeStyled";
 
 const RecentBlogs = ({ posts, acf }) => {
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1, // each child fades in after previous
-      },
-    },
-  };
+
 
   const itemVariants = {
     hidden: { opacity: 0, y: 5 },

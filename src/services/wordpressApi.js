@@ -4,6 +4,9 @@ const api = axios.create({
   baseURL: "https://comparebestbrokers.com/cbb_wp/wp-json",
 });
 
+// getPost is function that return array of objects,than we insert this function in promise
+
+
 // Fetchers
 const getPosts = () => api.get("/wp/v2/posts?_embed").then(r => r.data);
 const getBrokers = () => api.get("/wp/v2/brokers?orderby=menu_order&order=asc").then(r => r.data);
@@ -20,7 +23,7 @@ const mapPosts = posts => posts.map(post => {
   title: post.title?.rendered ?? "",
   content: post.content?.rendered ?? "",
   imageLarge:
-    post._embedded?.["wp:featuredmedia"]?.[0]?.media_details?.sizes?.medium_large?.source_url
+    post._embedded?.["wp:featuredmedia"]?.[0]?.media_details?.sizes?.full?.source_url
     || "https://comparebestbrokers.com/cbb_wp/wp-content/uploads/2025/09/no-image-icon.webp",
   slug: post.slug,
   categoryName: post._embedded?.["wp:term"]?.[0]?.[0]?.name || "Uncategorized",
@@ -104,6 +107,7 @@ const mapACF = data => ({
   },
 });
 
+// Here we basicaly says const posts=getPosts >> posts=r.data
 export const loadInitialData = async () => {
   const [posts, brokers, menus, categories, options] = await Promise.all([
     getPosts(),

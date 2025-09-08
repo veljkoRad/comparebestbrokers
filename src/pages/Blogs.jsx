@@ -48,7 +48,7 @@ const Blogs = ({ posts, acf }) => {
           <Box
             style={{ borderBottom: "1px solid #222F43", marginTop: '20px', marginBottom: "50px", }}
           />
-          <Box component={motion.div} sx={{ display: 'flex', flexWrap: 'wrap', gap: '24px', justifyContent: 'center' }} initial="hidden"
+          <Box component={motion.div} sx={{ display: 'flex', flexWrap: 'wrap', gap: '24px', justifyContent: 'center', alignItems: 'stretch' }} initial="hidden"
             initial="hidden"
             animate="visible"
             variants={{
@@ -72,7 +72,17 @@ const Blogs = ({ posts, acf }) => {
 
                   )
                 }
-                const shortContent = item.content.length > 150 ? item.content.slice(0, 150) + '...' : item.content;
+                // const shortContent = item.content.length > 150 ? item.content.slice(0, 150) + '...' : item.content;
+                const stripHtml = (html) => {
+                  const div = document.createElement("div");
+                  div.innerHTML = html;
+                  return div.textContent || div.innerText || "";
+                };
+
+                const shortContent = (() => {
+                  const text = stripHtml(item.content);
+                  return text.length > 150 ? text.slice(0, 150) + "..." : text;
+                })();
                 const shortTitle = item.title.length > 70 ? item.title.slice(0, 70) + '...' : item.title;
 
 
@@ -94,7 +104,7 @@ const Blogs = ({ posts, acf }) => {
                       />
                       <Stack direction='row' gap='7px' flexWrap='wrap'>
                         {item.tags.map((tag, i) => (
-                          <Typography key={i} color="text.gray">
+                          <Typography key={i} color="text.gray" variant="button">
                             #{tag}
                           </Typography>
                         ))}

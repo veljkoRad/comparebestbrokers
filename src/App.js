@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
-import axios from "axios";
 import Brokers from "./pages/Brokers";
 import Home from "./pages/home/Home";
 import Blogs from "./pages/Blogs";
@@ -21,9 +20,10 @@ function App() {
   const [menus, setMenus] = useState([]);
   const [acf, setAcf] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [openBroker, setOpenBroker] = useState(null);
+  
+  const location=useLocation();
 
-   const [openBroker, setOpenBroker] = useState(null);
-   const location=useLocation();
 
   useEffect(() => {
   loadInitialData()
@@ -38,13 +38,13 @@ function App() {
     .finally(() => setLoading(false));
 }, []);
 
-     useEffect(() => {
+// When we open Broker card on home page, and when I go to other route, than go back i want this card to be turned off
+   useEffect(() => {
     setOpenBroker(null);
   }, [location]);
 
   const handleOpen = (broker) => setOpenBroker(broker);
   const handleClose = () => setOpenBroker(null);
-console.log(posts);
 return (
   <>
     {loading ? (

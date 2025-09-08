@@ -98,6 +98,7 @@ const BestBrokers = ({ brokers, handleOpen, handleClose, openBroker, acf }) => {
           />
         </Link>
       )}
+      // openBroker is not boolean, it's null or object, so !null =true, !object=false,and we want oposite, so !!nul=false, !!object=true
       <Dialog open={!!openBroker} onClose={handleClose} maxWidth="sm" fullWidth sx={{ backgroundColor: 'transparent' }}>
         <BrokerPopup openBroker={openBroker} handleClose={handleClose} />
       </Dialog>
