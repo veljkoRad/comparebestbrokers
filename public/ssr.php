@@ -1,23 +1,33 @@
 <?php
-// ssr.php — dynamic meta/OG + JSON injection
-// routes: home/news/brokers/contact (type=route&name=...)
-// singles: /news/:slug (type=news), /brokers/:slug (type=brokers)
+// ssr.php — dynamic meta/OG + JSON injection + server HTML for:
+//   route pages: / (home), /news, /brokers, /contact   -> type=route&name=...
+//   single pages: /news/:slug (type=news), /brokers/:slug (type=brokers)
+// Hostinger-friendly, no per-slug builds. Injects JSON-LD and #ssr-content HTML.
 
 //// ---------- CONFIG ----------
-$CACHE_SECONDS     = 0; // set to 300 after verification
+$CACHE_SECONDS     = 300; // production TTL (set 0 while debugging if needed)
 $DEFAULT_OG_IMAGE  = '/cbb_wp/wp-content/uploads/2025/09/your-global-trading-guide.jpg';
 $SITE_LOGO_URL     = '/cbb_wp/wp-content/uploads/2025/09/cbb-icon.ico';
 $SITE_NAME         = 'Compare Best Brokers';
+
+// how many items to render into server HTML lists
+$HOME_NEWS_COUNT   = 6;
+$HOME_BROKERS_COUNT = 6;
+$NEWS_COUNT        = 12;
+$BROKERS_COUNT     = 50;
 //// ---------------------------
 
+// origin
 $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
 $host   = $_SERVER['HTTP_HOST'] ?? 'comparebestbrokers.com';
 $origin = $scheme . '://' . $host;
 
+// params
 $type = $_GET['type'] ?? '';
 $slug = $_GET['slug'] ?? '';
 $name = $_GET['name'] ?? '';
 
+// load SPA shell
 $shellPath = __DIR__ . '/index.html';
 if (!file_exists($shellPath)) {
     http_response_code(500);
@@ -25,11 +35,16 @@ if (!file_exists($shellPath)) {
 }
 $html = file_get_contents($shellPath);
 
-// strip default OG/Twitter/canonical from shell
+// remove default OG/Twitter/Canonical from shell (avoid duplicates)
 $removePatterns = [
+    // Open Graph
     '/<meta\s+property="og:(title|description|image|type|url)"[^>]*>\s*/i',
-    '/<meta\s+name="twitter:(title|description|image|card)"[^>]*>\s*/i',
-    '/<link\s+rel="canonical"[^>]*>\s*/i'
+    // Twitter (name= or property=), including url/domain
+    '/<meta\s+(?:name|property)="twitter:(title|description|image|card|url|domain)"[^>]*>\s*/i',
+    // Canonical
+    '/<link\s+rel="canonical"[^>]*>\s*/i',
+    // Any existing <title> in the shell (we’ll re-insert a correct one)
+    '/<title\b[^>]*>.*?<\/title>\s*/is'
 ];
 $html = preg_replace($removePatterns, '', $html);
 
@@ -87,21 +102,86 @@ function cache_headers($sec)
     if ($sec > 0) header("Cache-Control: public, max-age=$sec");
     else header("Cache-Control: no-cache, no-store, must-revalidate");
 }
+function insert_title(&$html, $title)
+{
+    $safe = esc_attr_($title);
+    // Try to insert after <meta charset=...>
+    if (preg_match('/<meta\s+charset=[\'"][^\'"]+[\'"]\s*\/?>/i', $html, $m, PREG_OFFSET_CAPTURE)) {
+        $pos = $m[0][1] + strlen($m[0][0]);
+        $html = substr($html, 0, $pos) . '<title>' . $safe . '</title>' . substr($html, $pos);
+        return;
+    }
+    // Else insert right after <head>
+    $html = preg_replace('/<head[^>]*>/i', '$0<title>' . $safe . '</title>', $html, 1);
+}
 
-$canonical = $origin . ($_SERVER['REQUEST_URI'] ?? '');
+// build simple list HTML for bots / view-source
+function render_news_list_html($items, $origin, $defaultImg)
+{
+    $out = '<section aria-label="Latest news"><ul style="list-style:none;padding:0;margin:0">';
+    foreach ($items as $it) {
+        $slug = $it['slug'] ?? '';
+        if (!$slug) continue;
+        $url  = '/news/' . $slug;
+        $title = strip_tags_collapse($it['title']['rendered'] ?? '');
+        $img  = $it['_embedded']['wp:featuredmedia'][0]['source_url'] ?? '';
+        $img  = esc_attr_(absolutize(firstNonEmpty($img, $defaultImg), $origin));
+        $out .= '<li style="margin:12px 0"><article>';
+        $out .= '<a href="' . $url . '"><img alt="" src="' . $img . '" loading="lazy" style="max-width:240px;height:auto;border-radius:8px"></a> ';
+        $out .= '<h3 style="margin:6px 0"><a href="' . $url . '">' . esc_attr_($title) . '</a></h3>';
+        $out .= '</article></li>';
+    }
+    $out .= '</ul></section>';
+    return $out;
+}
+function render_brokers_list_html($items)
+{
+    $out = '<section aria-label="Brokers"><ul style="list-style:none;padding:0;margin:0">';
+    foreach ($items as $it) {
+        $slug = $it['slug'] ?? '';
+        if (!$slug) continue;
+        $url  = '/brokers/' . $slug;
+        $name = firstNonEmpty($it['acf']['broker_name'] ?? '', $it['title']['rendered'] ?? '', $it['name'] ?? 'Broker');
+        $out .= '<li style="margin:12px 0"><article>';
+        $out .= '<h3 style="margin:6px 0"><a href="' . $url . '">' . esc_attr_(strip_tags_collapse($name)) . '</a></h3>';
+        $out .= '</article></li>';
+    }
+    $out .= '</ul></section>';
+    return $out;
+}
+
+// canonical (strip query string for canonical/og:url)
+$requestUri = $_SERVER['REQUEST_URI'] ?? '/';
+$pathOnly   = parse_url($requestUri, PHP_URL_PATH) ?? '/';
+$canonical  = $origin . $pathOnly;
+
 $title = $desc = $ogImg = '';
 $contentHtml = '';
 $init = [];
 $ld = [];
 
-// ROUTE MODE
+// -------- ROUTES (HOME / NEWS / BROKERS / CONTACT) --------
 if ($type === 'route') {
     $route = strtolower($name);
-    header("X-SSR: route-$route");
+
     if ($route === 'home') {
         $title = $SITE_NAME;
         $desc  = 'Find top brokers and the latest market posts.';
         $ogImg = absolutize($DEFAULT_OG_IMAGE, $origin);
+
+        // SSR body: recent news + some brokers
+        $news  = get_json($origin . "/cbb_wp/wp-json/wp/v2/posts?_embed&per_page=" . $GLOBALS['HOME_NEWS_COUNT']) ?? [];
+        $broks = get_json($origin . "/cbb_wp/wp-json/wp/v2/brokers?per_page=" . $GLOBALS['HOME_BROKERS_COUNT']) ?? [];
+
+        $contentHtml  = '<section aria-label="Highlights">';
+        if (is_array($news) && count($news)) {
+            $contentHtml .= '<h2>Latest News</h2>' . render_news_list_html($news, $origin, $DEFAULT_OG_IMAGE);
+        }
+        if (is_array($broks) && count($broks)) {
+            $contentHtml .= '<h2 style="margin-top:24px">Featured Brokers</h2>' . render_brokers_list_html($broks);
+        }
+        $contentHtml .= '</section>';
+
         $ld = [
             "@context" => "https://schema.org",
             "@type" => "WebSite",
@@ -117,16 +197,33 @@ if ($type === 'route') {
         $title = 'News | ' . $SITE_NAME;
         $desc  = 'Latest market posts and analysis.';
         $ogImg = absolutize($DEFAULT_OG_IMAGE, $origin);
+
+        $data = get_json($origin . "/cbb_wp/wp-json/wp/v2/posts?_embed&per_page=" . $GLOBALS['NEWS_COUNT']);
+        if (is_array($data) && count($data)) {
+            $contentHtml = render_news_list_html($data, $origin, $DEFAULT_OG_IMAGE);
+        }
+
         $ld = ["@context" => "https://schema.org", "@type" => "CollectionPage", "name" => $title, "url" => $canonical];
     } elseif ($route === 'brokers') {
         $title = 'Brokers | ' . $SITE_NAME;
         $desc  = 'Compare regulated brokers, ratings and key features.';
         $ogImg = absolutize($DEFAULT_OG_IMAGE, $origin);
+
+        $data = get_json($origin . "/cbb_wp/wp-json/wp/v2/brokers?per_page=" . $GLOBALS['BROKERS_COUNT']);
+        if (is_array($data) && count($data)) {
+            $contentHtml = render_brokers_list_html($data);
+        }
+
         $ld = ["@context" => "https://schema.org", "@type" => "CollectionPage", "name" => $title, "url" => $canonical];
     } elseif ($route === 'contact') {
         $title = 'Contact | ' . $SITE_NAME;
         $desc  = 'Get in touch with us.';
         $ogImg = absolutize($DEFAULT_OG_IMAGE, $origin);
+
+        // simple static SSR body for bots / view-source
+        $contentHtml = '<section aria-label="Contact"><h1>Contact</h1>'
+            . '<p>Please reach us via the contact form on this page.</p></section>';
+
         $ld = ["@context" => "https://schema.org", "@type" => "WebPage", "name" => $title, "url" => $canonical];
     } else {
         header('Content-Type: text/html; charset=UTF-8');
@@ -135,11 +232,9 @@ if ($type === 'route') {
         exit;
     }
 }
-// SINGLE NEWS
+// -------- SINGLE NEWS --------
 elseif ($type === 'news' && $slug) {
-    header("X-SSR: single-news");
-    $api = $origin . "/cbb_wp/wp-json/wp/v2/posts?slug=" . rawurlencode($slug) . "&_embed&per_page=1";
-    $data = get_json($api);
+    $data = get_json($origin . "/cbb_wp/wp-json/wp/v2/posts?slug=" . rawurlencode($slug) . "&_embed&per_page=1");
     $item = (is_array($data) && count($data)) ? $data[0] : null;
     if (!$item) {
         http_response_code(404);
@@ -148,19 +243,21 @@ elseif ($type === 'news' && $slug) {
         echo $html;
         exit;
     }
+
     $title = strip_tags_collapse($item['title']['rendered'] ?? ('News | ' . $SITE_NAME));
     $desc  = trim160(strip_tags_collapse(firstNonEmpty($item['excerpt']['rendered'] ?? '', $item['content']['rendered'] ?? '')));
+
     $og = $item['_embedded']['wp:featuredmedia'][0]['source_url'] ?? '';
     $ogImg = absolutize(firstNonEmpty($og, $DEFAULT_OG_IMAGE), $origin);
+
     $contentHtml = $item['content']['rendered'] ?? '';
     $init = ['posts' => [$item]];
+
     $ld = ["@context" => "https://schema.org", "@type" => "Article", "headline" => $title, "url" => $canonical, "image" => [$ogImg]];
 }
-// SINGLE BROKER
+// -------- SINGLE BROKER --------
 elseif ($type === 'brokers' && $slug) {
-    header("X-SSR: single-broker");
-    $api = $origin . "/cbb_wp/wp-json/wp/v2/brokers?slug=" . rawurlencode($slug) . "&per_page=1";
-    $data = get_json($api);
+    $data = get_json($origin . "/cbb_wp/wp-json/wp/v2/brokers?slug=" . rawurlencode($slug) . "&per_page=1");
     $item = (is_array($data) && count($data)) ? $data[0] : null;
     if (!$item) {
         http_response_code(404);
@@ -169,16 +266,20 @@ elseif ($type === 'brokers' && $slug) {
         echo $html;
         exit;
     }
+
     $name = firstNonEmpty($item['acf']['broker_name'] ?? '', $item['title']['rendered'] ?? '', $item['name'] ?? 'Broker');
     $title = strip_tags_collapse("$name | $SITE_NAME");
     $desc  = trim160(strip_tags_collapse(firstNonEmpty($item['acf']['short_description'] ?? '', $item['content']['rendered'] ?? '')));
+
     $logo  = $item['acf']['broker_logo']['url'] ?? ($item['logo'] ?? '');
     $ogImg = absolutize(firstNonEmpty($logo, $SITE_LOGO_URL, $DEFAULT_OG_IMAGE), $origin);
+
     $contentHtml = firstNonEmpty($item['acf']['short_description'] ?? '', '') . firstNonEmpty($item['acf']['key_benefits'] ?? '', '');
     $init = ['brokers' => [$item]];
+
     $ld = ["@context" => "https://schema.org", "@type" => "Organization", "name" => $name, "url" => $canonical, "logo" => $ogImg];
 }
-// FALLBACK
+// -------- FALLBACK --------
 else {
     header('Content-Type: text/html; charset=UTF-8');
     cache_headers($CACHE_SECONDS);
@@ -186,8 +287,8 @@ else {
     exit;
 }
 
-// inject <title>
-$html = preg_replace('/<title>.*?<\/title>/is', '<title>' . esc_attr_($title) . '</title>', $html, 1);
+// inject <title> (always ensure presence)
+insert_title($html, $title);
 
 // meta description
 if (preg_match('/<meta\s+name="description"[^>]*>/i', $html)) {
@@ -196,7 +297,7 @@ if (preg_match('/<meta\s+name="description"[^>]*>/i', $html)) {
     $html = str_replace('</head>', '<meta name="description" content="' . esc_attr_($desc) . '"></head>', $html);
 }
 
-// OG/Twitter/Canonical (always include og:logo to silence checkers)
+// OG/Twitter/Canonical (includes non-standard og:logo by request)
 $headAdd = [];
 $headAdd[] = '<meta property="og:title" content="' . esc_attr_($title) . '">';
 $headAdd[] = '<meta property="og:description" content="' . esc_attr_($desc) . '">';
@@ -233,7 +334,7 @@ if (!empty($init)) {
     }
 }
 
-// visible HTML only for singles
+// inject server HTML into #ssr-content (for singles AND lists when available)
 if (!empty($contentHtml)) {
     $html = str_replace('<div id="ssr-content"></div>', '<div id="ssr-content">' . $contentHtml . '</div>', $html);
 }
