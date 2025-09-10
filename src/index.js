@@ -16,6 +16,11 @@ function removeSSRSlot() {
 window.addEventListener('app-hydrated', removeSSRSlot, { once: true });
 // Safety fallback in case the event never fires
 setTimeout(removeSSRSlot, 5000);
+function clearHydratingClass() {
+  document.documentElement.classList.remove('is-hydrating');
+}
+window.addEventListener('app-hydrated', clearHydratingClass, { once: true });
+setTimeout(clearHydratingClass, 5000);
 
 const theme = createTheme({
   spacing: 4,
