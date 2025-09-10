@@ -225,6 +225,27 @@ if ($type === 'route') {
             . '<p>Please reach us via the contact form on this page.</p></section>';
 
         $ld = ["@context" => "https://schema.org", "@type" => "WebPage", "name" => $title, "url" => $canonical];
+    } elseif ($route === 'search') {
+        $q = trim($_GET['query'] ?? '');
+        $title = ($q !== '' ? "Search: " . htmlspecialchars($q) . " | " : "Search | ") . $SITE_NAME;
+        $desc  = $q !== '' ? "Search results for \"$q\"." : "Search results.";
+        $ogImg = absolutize($DEFAULT_OG_IMAGE, $origin);
+
+        // Noindex internal search pages
+        $html = str_replace('</head>', '<meta name="robots" content="noindex,follow"></head>', $html);
+
+        // Canonical (keep the query if present)
+        $canonical = $origin . '/search' . ($q !== '' ? '?query=' . rawurlencode($q) : '');
+        $html = str_replace('</head>', '<link rel="canonical" href="' . esc($canonical) . '"></head>', $html);
+
+        // (Optional) JSON-LD for a SearchResultsPage (minimal)
+        $jsonLd = [
+            "@context" => "https://schema.org",
+            "@type" => "SearchResultsPage",
+            "name" => $title,
+            "url"  => $canonical,
+        ];
+        $html = str_replace('</head>', '<script type="application/ld+json">' . json_encode($jsonLd, JSON_UNESCAPED_SLASHES) . '</script></head>', $html);
     } else {
         header('Content-Type: text/html; charset=UTF-8');
         cache_headers($CACHE_SECONDS);

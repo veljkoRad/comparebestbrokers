@@ -22,6 +22,12 @@ DirectoryIndex index.php index.html
   RewriteRule ^news/([^/]+)/?$ ssr.php?type=news&slug=$1 [L,QSA]
   RewriteRule ^brokers/([^/]+)/?$ ssr.php?type=brokers&slug=$1 [L,QSA]
 
+  # Search route (preserve query string like ?query=xxx)
+  RewriteRule ^search/?$ ssr.php?type=route&name=search [L,QSA]
+
+  # News list route (make sure QSA is present so ?page=N is kept)
+  RewriteRule ^news/?$ ssr.php?type=route&name=news [L,QSA]
+
   # serve real files directly (must come AFTER our rewrites)
   RewriteCond %{REQUEST_FILENAME} -f
   RewriteRule ^ - [END]

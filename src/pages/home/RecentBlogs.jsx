@@ -25,7 +25,7 @@ const RecentBlogs = ({ posts, acf }) => {
               <img
                 src={acf.home.bannerImage}
                 alt="banner"
-                style={{ display: "block", margin: "0 auto 70px", width: '100%', maxWidth: '1111px' }}
+                style={{ display: "block", margin: "0 auto 70px", width: '100%', maxWidth: '1110px' }}
               />
             </Link>
           )}

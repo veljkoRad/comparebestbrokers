@@ -1,14 +1,27 @@
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Box, Container, Link, Pagination, Stack, Typography } from "@mui/material";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useSearchParams } from "react-router-dom";
 import TextGradient from "../components/TextGradient";
 import { BlogLink } from "../styles/blogsStyled";
 
 const Blogs = ({ posts, acf }) => {
-
-  const [currentPage, setCurrentPage] = useState(1);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialPage = Number(searchParams.get("page")) || 1;
+  const [currentPage, setCurrentPage] = useState(initialPage);
   const postsPerPage = 8;
+  const pageCount = Math.max(1, Math.ceil(posts.length / postsPerPage))
+  useEffect(() => {
+    if (currentPage > pageCount) {
+      setCurrentPage(pageCount);
+      setSearchParams({ page: String(pageCount) });
+    }
+  }, [pageCount]);
+
+  useEffect(() => {
+    const p = Number(searchParams.get("page")) || 1;
+    if (p !== currentPage) setCurrentPage(p);
+  }, [searchParams]);
 
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
@@ -16,6 +29,7 @@ const Blogs = ({ posts, acf }) => {
 
   const handleChangePage = (event, value) => {
     setCurrentPage(value);
+    setSearchParams({ page: String(value) });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -125,7 +139,7 @@ const Blogs = ({ posts, acf }) => {
             }
           </Box>
           <Pagination
-            count={Math.ceil(posts.length / postsPerPage)}
+            count={pageCount}
             page={currentPage}
             onChange={handleChangePage}
             variant="outlined"
