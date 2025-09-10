@@ -8,8 +8,8 @@ const api = axios.create({
 
 
 // Fetchers
-const getPosts = () => api.get("/wp/v2/posts?_embed").then(r => r.data);
-const getBrokers = () => api.get("/wp/v2/brokers?orderby=menu_order&order=asc").then(r => r.data);
+const getPosts = () => api.get("/wp/v2/posts?_embed&per_page=100").then(r => r.data);
+const getBrokers = () => api.get("/wp/v2/brokers?orderby=menu_order&order=asc&per_page=100").then(r => r.data);
 const getCategories = () => api.get("/wp/v2/categories").then(r => r.data);
 const getMenus = () => api.get("/wp-menus/v1/menus/navMenu").then(r => r.data);
 const getOptions = () => api.get("/acf/v2/options").then(r => r.data);

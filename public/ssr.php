@@ -12,9 +12,9 @@ $SITE_NAME         = 'Compare Best Brokers';
 
 // how many items to render into server HTML lists
 $HOME_NEWS_COUNT   = 6;
-$HOME_BROKERS_COUNT = 6;
-$NEWS_COUNT        = 12;
-$BROKERS_COUNT     = 50;
+$HOME_BROKERS_COUNT = 8;
+$NEWS_COUNT        = 100;
+$BROKERS_COUNT     = 100;
 //// ---------------------------
 
 // origin

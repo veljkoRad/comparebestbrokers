@@ -1,0 +1,43 @@
+Options -MultiViews
+DirectoryIndex index.php index.html
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # keep WordPress reachable
+  RewriteRule ^cbb_wp/ - [END]
+
+  # ✅ Sitemap at root (custom sitemap.php if present; else WP's sitemap)
+  RewriteCond %{DOCUMENT_ROOT}/sitemap.php -f
+  RewriteRule ^sitemap\.xml$ sitemap.php [L]
+  RewriteRule ^sitemap\.xml$ cbb_wp/wp-sitemap.xml [L]
+
+  # ✅ Dynamic SSR for list/static pages (include HOME)
+  RewriteRule ^$ ssr.php?type=route&name=home [L,QSA]
+  RewriteRule ^news/?$ ssr.php?type=route&name=news [L,QSA]
+  RewriteRule ^brokers/?$ ssr.php?type=route&name=brokers [L,QSA]
+  RewriteRule ^contact/?$ ssr.php?type=route&name=contact [L,QSA]
+
+  # ✅ Dynamic SSR for singles
+  RewriteRule ^news/([^/]+)/?$ ssr.php?type=news&slug=$1 [L,QSA]
+  RewriteRule ^brokers/([^/]+)/?$ ssr.php?type=brokers&slug=$1 [L,QSA]
+
+  # serve real files directly (must come AFTER our rewrites)
+  RewriteCond %{REQUEST_FILENAME} -f
+  RewriteRule ^ - [END]
+
+  # SPA fallback
+  RewriteRule ^ /index.html [END]
+</IfModule>
+
+
+
+
+
+
+
+
+
+
+
+
