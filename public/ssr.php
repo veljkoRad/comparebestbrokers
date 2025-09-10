@@ -1,16 +1,17 @@
 <?php
 // ssr.php — dynamic meta/OG + JSON injection for /news/:slug and /brokers/:slug
-// Hostinger (Apache + PHP). No per-slug builds needed.
+// Hostinger-friendly. No per-slug builds. Injects JSON-LD (Article/Organization).
 
-// ---------- CONFIG ----------
-$CACHE_SECONDS = 0; // while testing keep 0 (no cache). Later: e.g. 300 (5 minutes)
-$DEFAULT_OG_IMAGE = '/cbb_wp/wp-content/uploads/2025/09/your-global-trading-guide.jpg'; // <-- set a real fallback image
-// ---------------------------
+//// ---------- CONFIG ----------
+$CACHE_SECONDS     = 0; // while testing: 0 (no cache). Later: 300 (5 min)
+$DEFAULT_OG_IMAGE  = '/cbb_wp/wp-content/uploads/2025/09/your-global-trading-guide.jpg'; // <-- your fallback
+$SITE_LOGO_URL     = '/cbb_wp/wp-content/uploads/2025/09/cbb-icon.ico'; // optional: put your site LOGO here if you prefer
+//// ---------------------------
 
 // Resolve site origin from current request
-$scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
-$host   = $_SERVER['HTTP_HOST'] ?? 'comparebestbrokers.com';
-$origin = $scheme . '://' . $host;
+$scheme  = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+$host    = $_SERVER['HTTP_HOST'] ?? 'comparebestbrokers.com';
+$origin  = $scheme . '://' . $host;
 
 $type = $_GET['type'] ?? '';
 $slug = $_GET['slug'] ?? '';
@@ -85,11 +86,10 @@ function absolutize($url, $origin)
     return $origin . '/' . $url;
 }
 
-// Build WP REST endpoint
+// WP REST endpoint
 if ($type === 'news') {
     $api = $origin . "/cbb_wp/wp-json/wp/v2/posts?slug=" . rawurlencode($slug) . "&_embed&per_page=1";
 } else {
-    // custom post type "brokers"
     $api = $origin . "/cbb_wp/wp-json/wp/v2/brokers?slug=" . rawurlencode($slug) . "&per_page=1";
 }
 
@@ -107,38 +107,77 @@ if (!$item) {
 
 $canonical = $origin . ($_SERVER['REQUEST_URI'] ?? '');
 
-// Build SEO fields
+// ===== Build SEO fields =====
 if ($type === 'news') {
     $title = strip_tags_collapse($item['title']['rendered'] ?? 'News | Compare Best Brokers');
     $desc  = trim160(strip_tags_collapse(firstNonEmpty($item['excerpt']['rendered'] ?? '', $item['content']['rendered'] ?? '')));
+
+    // featured image from _embed, fallback to DEFAULT_OG_IMAGE
     $ogImg = '';
     if (!empty($item['_embedded']['wp:featuredmedia'][0]['source_url'])) {
         $ogImg = $item['_embedded']['wp:featuredmedia'][0]['source_url'];
     }
     $ogImg = absolutize(firstNonEmpty($ogImg, $DEFAULT_OG_IMAGE), $origin);
+
+    // visible HTML slot
     $contentHtml = $item['content']['rendered'] ?? '';
+
+    // hydration JSON
     $init = ['posts' => [$item]];
+
+    // Article JSON-LD
+    $ld = [
+        "@context" => "https://schema.org",
+        "@type"    => "Article",
+        "headline" => $title,
+        "url"      => $canonical,
+        "image"    => [$ogImg]
+    ];
 } else {
-    // brokers
-    $name = $item['name'] ?? 'Broker';
+    // Brokers CPT (ACF)
+    $name = firstNonEmpty(
+        $item['acf']['broker_name'] ?? '',
+        $item['title']['rendered'] ?? '',
+        $item['name'] ?? 'Broker'
+    );
     $title = strip_tags_collapse("$name | Compare Best Brokers");
-    $desc  = trim160(strip_tags_collapse(firstNonEmpty($item['shortDescription'] ?? '', $item['content']['rendered'] ?? '')));
-    $ogImg = absolutize(firstNonEmpty($item['logo'] ?? '', $DEFAULT_OG_IMAGE), $origin);
-    $contentHtml = ($item['content']['rendered'] ?? '') . ($item['keyBenefits'] ?? '');
+
+    $desc  = trim160(strip_tags_collapse(
+        firstNonEmpty($item['acf']['short_description'] ?? '', $item['content']['rendered'] ?? '')
+    ));
+
+    // Prefer broker logo; fallback to site logo; then final fallback image
+    $logo  = $item['acf']['broker_logo']['url'] ?? ($item['logo'] ?? '');
+    $ogImg = absolutize(firstNonEmpty($logo, $SITE_LOGO_URL, $DEFAULT_OG_IMAGE), $origin);
+
+    // visible HTML slot (short_description + key_benefits)
+    $contentHtml = firstNonEmpty($item['acf']['short_description'] ?? '', '') .
+        firstNonEmpty($item['acf']['key_benefits'] ?? '', '');
+
+    // hydration JSON
     $init = ['brokers' => [$item]];
+
+    // Organization JSON-LD (this satisfies “logo” needs)
+    $ld = [
+        "@context" => "https://schema.org",
+        "@type"    => "Organization",
+        "name"     => $name,
+        "url"      => $canonical,
+        "logo"     => $ogImg
+    ];
 }
 
-// Inject <title>
+// ===== Inject <title> =====
 $html = preg_replace('/<title>.*?<\/title>/is', '<title>' . esc_attr_($title) . '</title>', $html, 1);
 
-// Inject/replace <meta name="description">
+// ===== Inject/replace <meta name="description"> =====
 if (preg_match('/<meta\s+name="description"[^>]*>/i', $html)) {
     $html = preg_replace('/<meta\s+name="description"[^>]*>/i', '<meta name="description" content="' . esc_attr_($desc) . '">', $html, 1);
 } else {
     $html = str_replace('</head>', '<meta name="description" content="' . esc_attr_($desc) . '"></head>', $html);
 }
 
-// Build OG/Twitter/canonical block
+// ===== OG/Twitter/canonical =====
 $headAdd = [];
 $headAdd[] = '<meta property="og:title" content="' . esc_attr_($title) . '">';
 $headAdd[] = '<meta property="og:description" content="' . esc_attr_($desc) . '">';
@@ -153,10 +192,20 @@ $headAdd[] = '<meta property="og:site_name" content="Compare Best Brokers">';
 $headAdd[] = '<meta name="twitter:card" content="summary_large_image">';
 $headAdd[] = '<link rel="canonical" href="' . esc_attr_($canonical) . '">';
 
-// Inject OG block
+if ($ogImg) {
+    $headAdd[] = '<meta property="og:logo" content="' . esc_attr_($ogImg) . '">';
+}
+
+
 $html = str_replace('</head>', implode("\n", $headAdd) . "\n</head>", $html);
 
-// Inject initial JSON for hydration
+// ===== JSON-LD =====
+if (!empty($ld)) {
+    $ldJson = json_encode($ld, JSON_UNESCAPED_SLASHES);
+    $html = str_replace('</head>', '<script type="application/ld+json">' . $ldJson . '</script></head>', $html);
+}
+
+// ===== Hydration JSON =====
 $initJson = json_encode($init, JSON_UNESCAPED_SLASHES);
 $initJson = str_replace('</script', '<\/script', $initJson);
 if (strpos($html, 'id="__CBB_DATA__"') !== false) {
@@ -170,10 +219,10 @@ if (strpos($html, 'id="__CBB_DATA__"') !== false) {
     $html = str_replace('</head>', '<script id="__CBB_DATA__" type="application/json">' . $initJson . '</script></head>', $html);
 }
 
-// Inject visible HTML for crawlers/social
+// ===== Visible HTML into #ssr-content =====
 $html = str_replace('<div id="ssr-content"></div>', '<div id="ssr-content">' . $contentHtml . '</div>', $html);
 
-// Output
+// ===== Output =====
 header('Content-Type: text/html; charset=UTF-8');
 if ($CACHE_SECONDS > 0) header("Cache-Control: public, max-age=$CACHE_SECONDS");
 else header("Cache-Control: no-cache, no-store, must-revalidate");
