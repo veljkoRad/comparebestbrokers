@@ -1,13 +1,13 @@
 <?php
 // ssr.php — dynamic meta/OG + JSON injection for /news/:slug and /brokers/:slug
-// Works on Hostinger (Apache + PHP). No per-slug builds needed.
+// Hostinger (Apache + PHP). No per-slug builds needed.
 
 // ---------- CONFIG ----------
-$CACHE_SECONDS = 0; // while testing keep 0 (no-cache). Later you can set e.g. 300 (5 minutes).
-$DEFAULT_OG_IMAGE = '/cbb_wp/wp-content/uploads/2025/09/your-global-trading-guide.jpg'; // <-- change to a real fallback image on your site
+$CACHE_SECONDS = 0; // while testing keep 0 (no cache). Later: e.g. 300 (5 minutes)
+$DEFAULT_OG_IMAGE = '/cbb_wp/wp-content/uploads/2025/09/your-global-trading-guide.jpg'; // <-- set a real fallback image
 // ---------------------------
 
-// Resolve site origin from the current request (https + host)
+// Resolve site origin from current request
 $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
 $host   = $_SERVER['HTTP_HOST'] ?? 'comparebestbrokers.com';
 $origin = $scheme . '://' . $host;
@@ -27,10 +27,17 @@ if (!file_exists($shellPath)) {
 }
 $html = file_get_contents($shellPath);
 
+// --- Remove default OG/Twitter/Canonical from shell (avoid duplicates) ---
+$removePatterns = [
+    '/<meta\s+property="og:(title|description|image|type|url)"[^>]*>\s*/i',
+    '/<meta\s+name="twitter:(title|description|image|card)"[^>]*>\s*/i',
+    '/<link\s+rel="canonical"[^>]*>\s*/i'
+];
+$html = preg_replace($removePatterns, '', $html);
+
 // --- helpers ---
 function get_json($url)
 {
-    // prefer file_get_contents; fallback to cURL if disabled
     $ctx = stream_context_create(['http' => ['timeout' => 7]]);
     $raw = @file_get_contents($url, false, $ctx);
     if ($raw !== false) return json_decode($raw, true);
@@ -90,7 +97,6 @@ $data = get_json($api);
 $item = (is_array($data) && count($data)) ? $data[0] : null;
 
 if (!$item) {
-    // Not found → SPA handles 404
     http_response_code(404);
     header('Content-Type: text/html; charset=UTF-8');
     if ($CACHE_SECONDS > 0) header("Cache-Control: public, max-age=$CACHE_SECONDS");
@@ -104,9 +110,7 @@ $canonical = $origin . ($_SERVER['REQUEST_URI'] ?? '');
 // Build SEO fields
 if ($type === 'news') {
     $title = strip_tags_collapse($item['title']['rendered'] ?? 'News | Compare Best Brokers');
-    $desc  = trim160(strip_tags_collapse(
-        firstNonEmpty($item['excerpt']['rendered'] ?? '', $item['content']['rendered'] ?? '')
-    ));
+    $desc  = trim160(strip_tags_collapse(firstNonEmpty($item['excerpt']['rendered'] ?? '', $item['content']['rendered'] ?? '')));
     $ogImg = '';
     if (!empty($item['_embedded']['wp:featuredmedia'][0]['source_url'])) {
         $ogImg = $item['_embedded']['wp:featuredmedia'][0]['source_url'];
@@ -118,11 +122,8 @@ if ($type === 'news') {
     // brokers
     $name = $item['name'] ?? 'Broker';
     $title = strip_tags_collapse("$name | Compare Best Brokers");
-    $desc  = trim160(strip_tags_collapse(
-        firstNonEmpty($item['shortDescription'] ?? '', $item['content']['rendered'] ?? '')
-    ));
-    $logo = $item['logo'] ?? '';
-    $ogImg = absolutize(firstNonEmpty($logo, $DEFAULT_OG_IMAGE), $origin);
+    $desc  = trim160(strip_tags_collapse(firstNonEmpty($item['shortDescription'] ?? '', $item['content']['rendered'] ?? '')));
+    $ogImg = absolutize(firstNonEmpty($item['logo'] ?? '', $DEFAULT_OG_IMAGE), $origin);
     $contentHtml = ($item['content']['rendered'] ?? '') . ($item['keyBenefits'] ?? '');
     $init = ['brokers' => [$item]];
 }
@@ -132,12 +133,7 @@ $html = preg_replace('/<title>.*?<\/title>/is', '<title>' . esc_attr_($title) . 
 
 // Inject/replace <meta name="description">
 if (preg_match('/<meta\s+name="description"[^>]*>/i', $html)) {
-    $html = preg_replace(
-        '/<meta\s+name="description"[^>]*>/i',
-        '<meta name="description" content="' . esc_attr_($desc) . '">',
-        $html,
-        1
-    );
+    $html = preg_replace('/<meta\s+name="description"[^>]*>/i', '<meta name="description" content="' . esc_attr_($desc) . '">', $html, 1);
 } else {
     $html = str_replace('</head>', '<meta name="description" content="' . esc_attr_($desc) . '"></head>', $html);
 }
@@ -157,10 +153,10 @@ $headAdd[] = '<meta property="og:site_name" content="Compare Best Brokers">';
 $headAdd[] = '<meta name="twitter:card" content="summary_large_image">';
 $headAdd[] = '<link rel="canonical" href="' . esc_attr_($canonical) . '">';
 
-// Inject OG block before </head>
+// Inject OG block
 $html = str_replace('</head>', implode("\n", $headAdd) . "\n</head>", $html);
 
-// Inject initial JSON (for hydration)
+// Inject initial JSON for hydration
 $initJson = json_encode($init, JSON_UNESCAPED_SLASHES);
 $initJson = str_replace('</script', '<\/script', $initJson);
 if (strpos($html, 'id="__CBB_DATA__"') !== false) {
@@ -174,7 +170,7 @@ if (strpos($html, 'id="__CBB_DATA__"') !== false) {
     $html = str_replace('</head>', '<script id="__CBB_DATA__" type="application/json">' . $initJson . '</script></head>', $html);
 }
 
-// Optional: inject visible HTML into #ssr-content for crawlers/social
+// Inject visible HTML for crawlers/social
 $html = str_replace('<div id="ssr-content"></div>', '<div id="ssr-content">' . $contentHtml . '</div>', $html);
 
 // Output

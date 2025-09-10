@@ -26,6 +26,7 @@ function App() {
 
 
   useEffect(() => {
+    window.dispatchEvent(new Event('app-hydrated'));
   loadInitialData()
     .then(({ posts, brokers, menus, categories, acf }) => {
       setPosts(posts);

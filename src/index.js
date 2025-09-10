@@ -9,6 +9,14 @@ import "@fontsource/noto-sans/500.css";
 import "@fontsource/noto-sans/700.css";
 import "@fontsource/noto-sans/800.css";
 
+function removeSSRSlot() {
+  const slot = document.getElementById('ssr-content');
+  if (slot) slot.remove();
+}
+window.addEventListener('app-hydrated', removeSSRSlot, { once: true });
+// Safety fallback in case the event never fires
+setTimeout(removeSSRSlot, 5000);
+
 const theme = createTheme({
   spacing: 4,
   palette: {
