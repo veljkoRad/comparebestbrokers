@@ -7,9 +7,9 @@ import BestBrokers from "./BestBrokers";
 const Home = ({ posts, brokers, handleOpen, handleClose, openBroker, acf }) => {
   return (
     <Box component="main">
-      <title>Home | Compare Best Brokers</title>
+      {/* <title>Home | Compare Best Brokers</title>
       <meta name="description" content="Find top brokers and the latest market posts." />
-      <meta name="keywords" content="brokers, trading, news, stocks, forex" />
+      <meta name="keywords" content="brokers, trading, news, stocks, forex" /> */}
       <Hero acf={acf} />
       <RecentBlogs posts={posts} acf={acf} />
       <BestBrokers brokers={brokers} handleOpen={handleOpen} handleClose={handleClose} openBroker={openBroker} acf={acf} />

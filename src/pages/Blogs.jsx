@@ -58,6 +58,7 @@ const Blogs = ({ posts, acf }) => {
     setSearchParams({
       page: String(value),
       ...(authorParam ? { author: authorParam } : {}),
+      ...(tagParam ? { tag: tagParam } : {}),
     });
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -76,9 +77,9 @@ const Blogs = ({ posts, acf }) => {
 
   return (
     <>
-      <title>News | Compare Best Brokers</title>
+      {/* <title>News | Compare Best Brokers</title>
       <meta name="description" content="Find  latest market posts." />
-      <meta name="keywords" content="brokers, trading, news, stocks, forex" />
+      <meta name="keywords" content="brokers, trading, news, stocks, forex" /> */}
       <Container sx={{ paddingY: "50px" }}>
         <motion.div
           initial={{ opacity: 0 }}

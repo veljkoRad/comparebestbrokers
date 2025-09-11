@@ -37,9 +37,9 @@ const SinglePost = ({ posts, brokers, handleOpen, handleClose, openBroker, categ
 
   return (
     <>
-      <title>{singleTitle}</title>
+      {/* <title>{singleTitle}</title>
       <meta name="description" content={description} />
-      <meta name="keywords" content="brokers, trading, news, stocks, forex" />
+      <meta name="keywords" content="brokers, trading, news, stocks, forex" /> */}
       <Box>
         <Container
           maxWidth="lg"

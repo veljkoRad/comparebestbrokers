@@ -8,9 +8,9 @@ import Form from '../components/Form'
 const Blog2 = ({ acf }) => {
     return (
         <>
-            <title>Contact | Compare Best Brokers</title>
+            {/* <title>Contact | Compare Best Brokers</title>
             <meta name="description" content="Find top brokers and the latest market posts." />
-            <meta name="keywords" content="brokers, trading, news, stocks, forex" />
+            <meta name="keywords" content="brokers, trading, news, stocks, forex" /> */}
             <Container maxWidth="lg" sx={{ marginTop: '50px', marginBottom: '50px', }}>
                 <motion.div
                     initial={{ opacity: 0 }}

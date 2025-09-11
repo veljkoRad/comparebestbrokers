@@ -40,9 +40,9 @@ const SingleBroker = ({ brokers, handleOpen, handleClose, openBroker, categories
 
     return (
         <>
-            <title>{singleTitle}</title>
+            {/* <title>{singleTitle}</title>
             <meta name="description" content={description} />
-            <meta name="keywords" content="brokers, trading, news, stocks, forex" />
+            <meta name="keywords" content="brokers, trading, news, stocks, forex" /> */}
 
 
             <Container maxWidth='lg' sx={{ paddingBottom: '50px' }}>
