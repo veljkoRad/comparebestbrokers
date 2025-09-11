@@ -1,10 +1,35 @@
 import { styled } from "@mui/material/styles";
 import { Button, Box, Card, Container, Typography } from "@mui/material"
-import { transform } from "framer-motion";
+import { color, transform } from "framer-motion";
 
 
 // Single Post
 
+
+export const SingleAuthor = styled(Typography)(({ theme }) => ({
+    textTransform: 'capitalize',
+    fontWeight: 700,
+    color: "#66768F",
+    transition: "all 0.3s ease 0s",
+    "&:hover": {
+        transform: 'translateY(-2px)',
+        transition: "all 0.3s ease 0s",
+        color: theme.palette.text.secondary
+    }
+}));
+
+export const SingleTag = styled(Typography)(({ theme }) => ({
+    padding: "12px 20px",
+    background: theme.palette.primary.light,
+    borderRadius: '8px',
+    border: '1px solid #222F43',
+    transition: "all 0.3s ease 0s",
+    "&:hover": {
+        transform: 'translateY(-2px)',
+        transition: "all 0.3s ease 0s",
+        color: theme.palette.text.secondary
+    }
+}));
 
 export const SingleBoxContainer = styled(Box)(({ theme }) => ({
     display: 'flex',

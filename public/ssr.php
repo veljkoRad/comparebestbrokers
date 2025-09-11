@@ -226,26 +226,35 @@ if ($type === 'route') {
 
         $ld = ["@context" => "https://schema.org", "@type" => "WebPage", "name" => $title, "url" => $canonical];
     } elseif ($route === 'search') {
-        $q = trim($_GET['query'] ?? '');
-        $title = ($q !== '' ? "Search: " . htmlspecialchars($q) . " | " : "Search | ") . $SITE_NAME;
-        $desc  = $q !== '' ? "Search results for \"$q\"." : "Search results.";
+        // Read query safely
+        $qRaw = $_GET['query'] ?? '';
+        $q    = trim($qRaw);
+
+        // Build title/desc
+        $qEsc = htmlspecialchars($q, ENT_QUOTES);
+        $title = ($q !== '' ? "Search: {$qEsc} | " : "Search | ") . $SITE_NAME;
+        $desc  = ($q !== '') ? "Search results for \"{$qEsc}\"." : "Search results.";
         $ogImg = absolutize($DEFAULT_OG_IMAGE, $origin);
 
-        // Noindex internal search pages
-        $html = str_replace('</head>', '<meta name="robots" content="noindex,follow"></head>', $html);
-
-        // Canonical (keep the query if present)
+        // Canonical (define BEFORE any usage anywhere else)
         $canonical = $origin . '/search' . ($q !== '' ? '?query=' . rawurlencode($q) : '');
-        $html = str_replace('</head>', '<link rel="canonical" href="' . esc($canonical) . '"></head>', $html);
 
-        // (Optional) JSON-LD for a SearchResultsPage (minimal)
-        $jsonLd = [
+        // Inject basic head tags for search (noindex recommended)
+        $headBits = [];
+        $headBits[] = '<meta name="robots" content="noindex,follow">';
+        $headBits[] = '<link rel="canonical" href="' . htmlspecialchars($canonical, ENT_QUOTES) . '">';
+        $headBits[] = '<script type="application/ld+json">' . json_encode([
             "@context" => "https://schema.org",
-            "@type" => "SearchResultsPage",
-            "name" => $title,
-            "url"  => $canonical,
-        ];
-        $html = str_replace('</head>', '<script type="application/ld+json">' . json_encode($jsonLd, JSON_UNESCAPED_SLASHES) . '</script></head>', $html);
+            "@type"    => "SearchResultsPage",
+            "name"     => $title,
+            "url"      => $canonical,
+        ], JSON_UNESCAPED_SLASHES) . '</script>';
+
+        // Append to </head> in one go (avoids double str_replace ordering bugs)
+        //$html = str_replace('</head>', implode('', $headBits) . '</head>', $html);
+
+        // No server HTML needed; the SPA renders results
+        // (Leave $contentHtml empty on purpose)
     } else {
         header('Content-Type: text/html; charset=UTF-8');
         cache_headers($CACHE_SECONDS);

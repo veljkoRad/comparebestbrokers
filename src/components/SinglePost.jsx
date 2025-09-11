@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import { Avatar, Box, Container, IconButton, Stack, Typography, } from "@mui/material";
-import { useParams, useNavigate } from "react-router-dom";
+import { Avatar, Box, Container, IconButton, Link, Stack, Typography, } from "@mui/material";
+import { useParams, useNavigate, Link as RouterLink } from "react-router-dom";
 import { motion } from "framer-motion";
 import TextGradient from "./TextGradient";
-import { HtmlWrapper, SingleBoxContainer, SinglePostImage } from "../styles/componentStyled";
+import { HtmlWrapper, SingleAuthor, SingleBoxContainer, SinglePostImage, SingleTag } from "../styles/componentStyled";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Sidebar from "./Sidebar";
 
@@ -65,7 +65,9 @@ const SinglePost = ({ posts, brokers, handleOpen, handleClose, openBroker, categ
                 <Stack direction='row' gap='10px' alignItems='center' sx={{ marginTop: '30px' }}>
                   <Avatar sx={{ background: (theme) => theme.palette.text.gray, width: '40px', height: '40px' }} />
                   <Stack>
-                    <Typography sx={{ textTransform: 'capitalize', fontWeight: 700, color: "#66768F" }}>{single.author}</Typography>
+                    <Link component={RouterLink} to={`/news?author=${single.author.replace(/\s+/g, "-")}`} >
+                      <SingleAuthor>{single.author}</SingleAuthor>
+                    </Link>
                     <Typography variant="button" sx={{ color: "#66768F", lineHeight: '14px' }}>{single.date}</Typography>
                   </Stack>
 
@@ -82,9 +84,11 @@ const SinglePost = ({ posts, brokers, handleOpen, handleClose, openBroker, categ
                 <HtmlWrapper dangerouslySetInnerHTML={{ __html: single.content }} />
                 <Stack direction='row' gap='10px' flexWrap='wrap' sx={{ borderTop: '1px solid #222F43', marginTop: '50px', paddingTop: '30px' }}>
                   {single.tags.map((tag, i) => (
-                    <Typography key={i} color="text.white" sx={{ padding: "12px 20px", background: (theme) => theme.palette.primary.light, borderRadius: '8px', border: '1px solid #222F43  ' }}>
-                      #{tag}
-                    </Typography>
+                    <Link component={RouterLink} to={`/news?tag=${tag.replace(/\s+/g, "-")}`} >
+                      <SingleTag key={i} color="text.white" sx={{}}>
+                        #{tag}
+                      </SingleTag>
+                    </Link>
                   ))}
                 </Stack>
 
